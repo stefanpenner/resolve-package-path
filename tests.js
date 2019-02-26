@@ -15,7 +15,20 @@ describe('fast-package-resolve', function() {
     fs.removeSync(FIXTURE_ROOT);
   });
 
-  it('ok', function() {
+  it('exposes it\'s cache', function() {
+    expect(resolvePackagePathSync._CACHE).to.be.instanceof(Map);
+    expect(resolvePackagePathSync._resetCache).to.be.a('function');
+  });
+
+  it('appears to reset cache', function() {
+    let oldCache = resolvePackagePathSync._CACHE;
+    oldCache.set('hi', 1);
+    expect(resolvePackagePathSync._CACHE.has('hi')).eql(true);
+    resolvePackagePathSync._resetCache();
+    expect(resolvePackagePathSync._CACHE.has('hi')).eql(false);
+  });
+
+  it('handles basic traditional NPM usage', function() {
     let rsvp;
     let a;
     let orange;
@@ -40,5 +53,9 @@ describe('fast-package-resolve', function() {
     expect(resolvePackagePathSync('orange', a.baseDir)).   to.eql(`${orange.baseDir}/package.json`);
     expect(resolvePackagePathSync('apple',  a.baseDir)).   to.eql(`${apple.baseDir}/package.json`);
     expect(resolvePackagePathSync('app',    a.baseDir)).   to.eql(null);
+  });
+
+  it.skip('handles yarn pnp usage', function() {
+    // TODO: test this
   });
 });
