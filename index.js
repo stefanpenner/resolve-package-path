@@ -63,3 +63,9 @@ module.exports = function resolvePackagePathSync(target, basedir, shouldCache = 
 module.exports._resetCache = function() {
   CACHE = new Map();
 };
+
+Object.defineProperty(module.exports, '_CACHE', {
+  get() {
+    return CACHE;
+  }
+})
