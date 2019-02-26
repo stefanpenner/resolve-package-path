@@ -2,7 +2,7 @@
 
 This project is special purpose made, to resolve package.json's given a specific module name, and basedir to start searching from. It cannot and does not resolve anything else.
 
-To achieve it's performance, it memoizes results identically to how `require` it self does. Specifically, for a given moduleName and baseDir it will, for the duration of the process, always return the exact same response.
+To achieve it's performance, it memoizes results identically to how node's `require` does. Specifically, for a given moduleName and baseDir it will, for the duration of the process, always return the exact same response.
 
 ## usage
 
