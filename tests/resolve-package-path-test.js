@@ -103,7 +103,7 @@ describe('resolvePackagePath', function() {
 
     it('resolves linked dir through link to unlinked dir', function() {
       var result = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);
-      assert.equal(result,unlinked.baseDir, 'link should resolve to real path package.json');
+      assert.equal(result, unlinked.baseDir, 'link should resolve to real path package.json');
       assert.equal(cache.size, 1, 'cache should contain 1 entry');
       assert.equal(cache.get(linked.baseDir), unlinked.baseDir, 'cached entry from linked path should be to unlinked path');
     });
@@ -111,9 +111,11 @@ describe('resolvePackagePath', function() {
     it('resolves unlinked dir to itself', function() {
       var result1 = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);  // repeat just to load an entry
       var result2 = resolvePackagePath._getRealDirectoryPath(cache, unlinked.baseDir);
+
       assert.equal(cache.size, 2, 'cache should now contain 2 entries');
       assert.equal(result1, result2, '2 cache entries should both have the same value (different keys)');
       assert.equal(result2, unlinked.baseDir, 'resolving the unlinked path should not change the value');
+      console.log(unlinked.baseDir, cache.get(unlinked.baseDir))
       assert.equal(cache.get(unlinked.baseDir), unlinked.baseDir, 'the cached value for the unlinked path should be to itself');
     });
 

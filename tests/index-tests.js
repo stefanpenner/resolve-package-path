@@ -5,6 +5,7 @@ var Project = require('fixturify-project');
 var fs = require('fs-extra');
 var FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`
 var expect = require('chai').expect;
+var path = require('path');
 
 describe('fast-package-resolve', function() {
   beforeEach(function() {
@@ -43,14 +44,14 @@ describe('fast-package-resolve', function() {
     app.writeSync();
 
     expect(resolvePackagePath('app',    app.root)).    to.eql(null);
-    expect(resolvePackagePath('rsvp',   app.baseDir)). to.eql(`${app.root}/app/node_modules/rsvp/package.json`);
-    expect(resolvePackagePath('orange', app.baseDir)). to.eql(`${app.root}/app/node_modules/orange/package.json`);
-    expect(resolvePackagePath('apple',  app.baseDir)). to.eql(`${app.root}/app/node_modules/apple/package.json`);
+    expect(resolvePackagePath('rsvp',   app.baseDir)). to.eql(path.normalize(`${app.root}/app/node_modules/rsvp/package.json`));
+    expect(resolvePackagePath('orange', app.baseDir)). to.eql(path.normalize(`${app.root}/app/node_modules/orange/package.json`));
+    expect(resolvePackagePath('apple',  app.baseDir)). to.eql(path.normalize(`${app.root}/app/node_modules/apple/package.json`));
     expect(resolvePackagePath('a',      app.baseDir)). to.eql(null);
-    expect(resolvePackagePath('a',      rsvp.baseDir)).to.eql(`${rsvp.baseDir}/node_modules/a/package.json`);
-    expect(resolvePackagePath('rsvp',   a.baseDir)).   to.eql(`${rsvp.baseDir}/package.json`);
-    expect(resolvePackagePath('orange', a.baseDir)).   to.eql(`${orange.baseDir}/package.json`);
-    expect(resolvePackagePath('apple',  a.baseDir)).   to.eql(`${apple.baseDir}/package.json`);
+    expect(resolvePackagePath('a',      rsvp.baseDir)).to.eql(path.normalize(`${rsvp.baseDir}/node_modules/a/package.json`));
+    expect(resolvePackagePath('rsvp',   a.baseDir)).   to.eql(path.normalize(`${rsvp.baseDir}/package.json`));
+    expect(resolvePackagePath('orange', a.baseDir)).   to.eql(path.normalize(`${orange.baseDir}/package.json`));
+    expect(resolvePackagePath('apple',  a.baseDir)).   to.eql(path.normalize(`${apple.baseDir}/package.json`));
     expect(resolvePackagePath('app',    a.baseDir)).   to.eql(null);
   });
 

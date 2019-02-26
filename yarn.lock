@@ -426,10 +426,10 @@ findup-sync@2.0.0:
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
-fixturify-project@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/fixturify-project/-/fixturify-project-1.6.0.tgz#987683611bfeb96f1d847bb6e61f035cced566c7"
-  integrity sha512-SzAHcpuAlou0eUc0qFqRk/vvqMO7UNpMMIfVQXdsUy523a6YKkJmnT+L5U25cbNOfovX2zlW/MbSbHulOPFwYQ==
+fixturify-project@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/fixturify-project/-/fixturify-project-1.7.0.tgz#ab59c4810cc79e03c4d06d19a83a22afb8866718"
+  integrity sha512-BStQY7kOHjW07E1EdHgiAoHuubq8oh368uH441Yrm7T0vVnlWf/xHiYSuA9l1HLOtqHDFJFzCLllhqpX3fVHAg==
   dependencies:
     fixturify "^0.3.4"
     tmp "^0.0.33"
