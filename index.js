@@ -1,7 +1,6 @@
 'use strict';
 
-var resolve = require('resolve');
-var resolvePackagePath = require('./lib/resolve-package-path');
+var customResolvePackagePath = require('./lib/resolve-package-path');
 var ALLOWED_ERROR_CODES = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
@@ -66,7 +65,7 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
       // together seemlessly
       pkgPath = pnp
         ? pnp.resolveToUnqualified(`${target}/package.json`, basedir)
-        : resolvePackagePath(cache, target, basedir);
+        : customResolvePackagePath(cache, target, basedir);
     } catch (e) {
       if (ALLOWED_ERROR_CODES[e.code] === true) {
         pkgPath = null;
