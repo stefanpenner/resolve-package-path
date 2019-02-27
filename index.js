@@ -50,7 +50,7 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
     cache = _cache;
   }
 
-  var key = `${target}\x00${basedir}`;
+  var key = target + '\x00' + basedir;
 
   var pkgPath;
 
