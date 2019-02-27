@@ -67,7 +67,7 @@ describe('resolve-package-path', function() {
           app.pkg.private = true;
           app.pkg.name
           app.pkg.scripts = {
-            test: "node -e 'require(\"resolve-package-path\")(\"ember-source-channel-url\", __dirname)'"
+            test: "node -r ./.pnp.js -e 'require(\"resolve-package-path\")(\"ember-source-channel-url\", __dirname)'"
           };
           app.pkg.installConfig = {
             pnp: true
