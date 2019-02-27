@@ -1,7 +1,7 @@
 'use strict';
 
-const resolve = require('resolve');
-const ALLOWED_ERROR_CODES = {
+var customResolvePackagePath = require('./lib/resolve-package-path');
+var ALLOWED_ERROR_CODES = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
 
@@ -11,8 +11,9 @@ const ALLOWED_ERROR_CODES = {
   MISSING_DEPENDENCY: true
 };
 
-let pnp;
-let CACHE = new Map();
+var pnp;
+var CacheGroup = require('./lib/cache-group');
+var CACHE = new CacheGroup();
 
 try {
   pnp = require('pnpapi');
@@ -21,30 +22,48 @@ try {
 }
 
 /*
- *
-/* @public
+ * @public
  *
  * @method resolvePackagePathSync
  * @param {string} name name of the dependency module.
  * @param {string} basedir root dir to run the resolve from
- * @param {Boolean} shouldCache (optional) intended to bypass cache defaulting to true
+ * @param {Boolean|CustomCache} (optional)
+ *  * if true: will choose the default global cache
+ *  * if false: will not cache
+ *  * if undefined or omitted, will choose the default global cache
+ *  * otherwise we assume the argument is an external cache of the form provided by fast-resolve-package/lib/cache-group.js
+ *
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
-module.exports = function resolvePackagePathSync(target, basedir, shouldCache = true) {
-  let pkgPath;
-  target = `${target}/package.json`;
-  let key = `${target}\x00${basedir}`;
+module.exports = function resolvePackagePath(target, basedir, _cache) {
+  var cache;
 
-  if (shouldCache && CACHE.has(key)) {
-    pkgPath = CACHE.get(key);
+  if (_cache === undefined || _cache === null || _cache === true) {
+    // if no cache specified, or if cache is true then use the global cache
+    cache = CACHE;
+  } else if (_cache === false) {
+    // if cache is explicity false, create a throw-away cache;
+    cache = new CacheGroup();
+  } else {
+    // otherwise, assume the user has provided an alternative cache for the following form:
+    // provided by fast-resolve-package/lib/cache-group.js
+    cache = _cache;
+  }
+
+  var key = `${target}\x00${basedir}`;
+
+  var pkgPath;
+
+  if (cache.PATH.has(key)) {
+    pkgPath = cache.PATH.get(key, pkgPath);
   } else {
     try {
       // the custom `pnp` code here can be removed when yarn 1.13 is the
-      // current release this is due to Yarn 1.13 and resolve interoperating
-      // together seemlessly
+      // current release. This is due to Yarn 1.13 and resolve interoperating
+      // together seemlessly.
       pkgPath = pnp
-        ? pnp.resolveToUnqualified(target, basedir)
-        : resolve.sync(target, { basedir });
+        ? pnp.resolveToUnqualified(`${target}/package.json`, basedir)
+        : customResolvePackagePath(cache, target, basedir);
     } catch (e) {
       if (ALLOWED_ERROR_CODES[e.code] === true) {
         pkgPath = null;
@@ -53,19 +72,17 @@ module.exports = function resolvePackagePathSync(target, basedir, shouldCache = 
       }
     }
 
-    if (shouldCache) {
-      CACHE.set(key, pkgPath);
-    }
+    cache.PATH.set(key, pkgPath);
   }
   return pkgPath;
 }
 
 module.exports._resetCache = function() {
-  CACHE = new Map();
+  CACHE = new CacheGroup();
 };
 
 Object.defineProperty(module.exports, '_CACHE', {
   get() {
     return CACHE;
   }
-})
+});

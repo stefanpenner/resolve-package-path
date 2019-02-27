@@ -1,17 +1,18 @@
 {
-  "name": "fast-resolve-package",
+  "name": "resolve-package-path",
   "description": "a special purpose fast memoizing way to resolve a node modules package.json",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
     "fs-extra": "^7.0.1",
+    "path-root": "^0.1.1",
     "pnpapi": "^0.0.0",
     "resolve": "^1.10.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "fixturify-project": "^1.6.0",
+    "fixturify-project": "^1.7.0",
     "mocha": "^6.0.2"
   },
   "scripts": {
