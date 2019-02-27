@@ -1,4 +1,5 @@
-# resolve-package-path [![Build Status](https://travis-ci.org/stefanpenner/fast-resolve-package.svg?branch=master)](https://travis-ci.org/stefanpenner/fast-resolve-package) [![Build status](https://ci.appveyor.com/api/projects/status/p8pf9rohgoa7u6il?svg=true)](https://ci.appveyor.com/project/embercli/fast-resolve-package)
+# resolve-package-path [![Build Status](https://travis-ci.org/stefanpenner/fast-resolve-package.svg?branch=master)](https://travis-ci.org/stefanpenner/fast-resolve-package) [![Build status](https://ci.appveyor.com/api/projects/status/7d7xx9ig4153lhh1/branch/master?svg=true)](https://ci.appveyor.com/project/embercli/resolve-package-path/branch/master)
+
 
 This project is special-purpose, made to resolve a package.json file
 given a specific module name and basedir to start searching from. It
