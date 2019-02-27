@@ -12,6 +12,7 @@ environment:
 
 install:
   - ps: Install-Product node $env:nodejs_version
+  - choco install yarn --version=1.13.0
   - appveyor-retry yarn
   - appveyor-retry yarn add mocha-appveyor-reporter # must be installed locally.
 
