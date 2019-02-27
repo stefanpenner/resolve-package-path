@@ -1,4 +1,4 @@
-# fast-resolve-package [![Build Status](https://travis-ci.org/stefanpenner/fast-resolve-package.svg?branch=master)](https://travis-ci.org/stefanpenner/fast-resolve-package) [![Build status](https://ci.appveyor.com/api/projects/status/p8pf9rohgoa7u6il?svg=true)](https://ci.appveyor.com/project/embercli/fast-resolve-package)
+# resolve-package-path [![Build Status](https://travis-ci.org/stefanpenner/fast-resolve-package.svg?branch=master)](https://travis-ci.org/stefanpenner/fast-resolve-package) [![Build status](https://ci.appveyor.com/api/projects/status/p8pf9rohgoa7u6il?svg=true)](https://ci.appveyor.com/project/embercli/fast-resolve-package)
 
 This project is special-purpose, made to resolve a package.json file
 given a specific module name and basedir to start searching from. It
@@ -16,11 +16,11 @@ To achieve its file-resolution performance, it does two specific things:
 ## Usage
 
 ```sh
-yarn add fast-resolve-package
+yarn add resolve-package-path
 ```
 
 ```js
-const resolvePackage = require('fast-resolve-package');
+const resolvePackage = require('resolve-package-path');
 
 resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') => // /path/to/rsvp.json or null
 ```
@@ -31,10 +31,10 @@ resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') =
 
 ### Disable default caching
 
-Although by default `fast-resolve-package` caches or memoizes results, this feature can be disabled:
+Although by default `resolve-package-path` caches or memoizes results, this feature can be disabled:
 
 ```js
-const resolvePackage = require('fast-resolve-package');
+const resolvePackage = require('resolve-package-path');
 
 resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', false) => // uncached result /path/to/rsvp.json or null
 ```
@@ -42,7 +42,7 @@ resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', f
 ### Purge the cache
 
 ```js
-const resolvePackage = require('fast-resolve-package');
+const resolvePackage = require('resolve-package-path');
 resolvePackage._resetCache();
 ```
 
@@ -58,6 +58,6 @@ cache = {
   REAL_DIRECTORY_PATH: new Map()
 };
 
-const resolvePackage = require('fast-resolve-package');
+const resolvePackage = require('resolve-package-path');
 resolvePackage('rsvp', 'path/to/start/from', cache);
 ```

@@ -1,5 +1,5 @@
 {
-  "name": "fast-resolve-package",
+  "name": "resolve-package-path",
   "description": "a special purpose fast memoizing way to resolve a node modules package.json",
   "version": "1.0.0",
   "main": "index.js",

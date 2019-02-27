@@ -182,13 +182,12 @@ describe('resolvePackagePath', function() {
       assert.throws(function() {return resolvePackagePath(caches, null, '/');}, TypeError);
     });
 
-    it('invalid dir', function() {
-      // BUG: For now this cannot work.
-      // This will never throw an exception, at least on Unix/Linux. If the path is
-      // relative, path.resolve() will make it absolute by putting the current directory
-      // before it, so it won't fail. If the path is already absolute, / will always be
-      // valid, so again it won't fail.
-      assert.throws(function() {return resolvePackagePath(caches, 'foo', 'efgh');}, TypeError);
+    it('baseDir were the end of the path does not exist, but the start does and if resolution proceeds would be a hit', function() {
+      assert.equal(resolvePackagePath(caches, 'bar', path.join(foo.baseDir, 'node_modules', 'does-not-exist')), path.join(foo.baseDir, 'node_modules', 'bar', 'package.json'));
+    });
+
+    it('invalid basedir', function() {
+      assert.equal(resolvePackagePath(caches, 'omg', 'asf'), null);
     });
 
     it('linked directory as name', function() {
