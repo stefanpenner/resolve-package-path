@@ -31,7 +31,7 @@ try {
  *  * if true: will choose the default global cache
  *  * if false: will not cache
  *  * if undefined or omitted, will choose the default global cache
- *  * otherwise we assume the argument is an external cache of the form provided by fast-resolve-package/lib/cache-group.js
+ *  * otherwise we assume the argument is an external cache of the form provided by resolve-package-path/lib/cache-group.js
  *
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
@@ -46,7 +46,7 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
     cache = new CacheGroup();
   } else {
     // otherwise, assume the user has provided an alternative cache for the following form:
-    // provided by fast-resolve-package/lib/cache-group.js
+    // provided by resolve-package-path/lib/cache-group.js
     cache = _cache;
   }
 
