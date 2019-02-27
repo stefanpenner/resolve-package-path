@@ -37,6 +37,10 @@ describe('resolvePackagePath', function() {
     }
   });
 
+  afterEach(function() {
+    project.dispose()
+  });
+
   describe('._findPackagePath', function() {
     // NOTE: _findPackagePath requires that 'dir' must be non-empty and valid.
 
@@ -178,7 +182,6 @@ describe('resolvePackagePath', function() {
       assert.throws(function() {return resolvePackagePath(caches, null, '/');}, TypeError);
     });
 
-/*
     it('invalid dir', function() {
       // BUG: For now this cannot work.
       // This will never throw an exception, at least on Unix/Linux. If the path is
@@ -187,7 +190,7 @@ describe('resolvePackagePath', function() {
       // valid, so again it won't fail.
       assert.throws(function() {return resolvePackagePath(caches, 'foo', 'efgh');}, TypeError);
     });
-*/
+
     it('linked directory as name', function() {
       var result = resolvePackagePath(caches, linked.baseDir, null);
       assert.equal(path.join(unlinked.baseDir, 'package.json'), result, 'should resolve to unlinked "linked/package.json"');
