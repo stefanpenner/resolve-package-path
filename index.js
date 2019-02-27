@@ -22,8 +22,7 @@ try {
 }
 
 /*
- *
-/* @public
+ * @public
  *
  * @method resolvePackagePathSync
  * @param {string} name name of the dependency module.
@@ -39,7 +38,7 @@ try {
 module.exports = function resolvePackagePath(target, basedir, _cache) {
   var cache;
 
-  if (_cache === undefined || _cache === true) {
+  if (_cache === undefined || _cache === null || _cache === true) {
     // if no cache specified, or if cache is true then use the global cache
     cache = CACHE;
   } else if (_cache === false) {
@@ -51,7 +50,6 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
     cache = _cache;
   }
 
-  var cache = _cache ? CACHE : new CacheGroup();
   var key = `${target}\x00${basedir}`;
 
   var pkgPath;
@@ -61,8 +59,8 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
   } else {
     try {
       // the custom `pnp` code here can be removed when yarn 1.13 is the
-      // current release this is due to Yarn 1.13 and resolve interoperating
-      // together seemlessly
+      // current release. This is due to Yarn 1.13 and resolve interoperating
+      // together seemlessly.
       pkgPath = pnp
         ? pnp.resolveToUnqualified(`${target}/package.json`, basedir)
         : customResolvePackagePath(cache, target, basedir);

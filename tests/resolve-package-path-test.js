@@ -115,7 +115,6 @@ describe('resolvePackagePath', function() {
       assert.equal(cache.size, 2, 'cache should now contain 2 entries');
       assert.equal(result1, result2, '2 cache entries should both have the same value (different keys)');
       assert.equal(result2, unlinked.baseDir, 'resolving the unlinked path should not change the value');
-      console.log(unlinked.baseDir, cache.get(unlinked.baseDir))
       assert.equal(cache.get(unlinked.baseDir), unlinked.baseDir, 'the cached value for the unlinked path should be to itself');
     });
 
@@ -180,7 +179,12 @@ describe('resolvePackagePath', function() {
     });
 
     it('invalid dir', function() {
-      assert.throws(function() {return resolvePackagePath(caches, 'foo', 'abcd');}, TypeError);
+      // BUG: For now this cannot work.
+      // This will never throw an exception, at least on Unix/Linux. If the path is
+      // relative, path.resolve() will make it absolute by putting the current directory
+      // before it, so it won't fail. If the path is already absolute, / will always be
+      // valid, so again it won't fail.
+      assert.throws(function() {return resolvePackagePath(caches, 'foo', 'efgh');}, TypeError);
     });
 
     it('linked directory as name', function() {
