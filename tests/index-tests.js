@@ -9,7 +9,7 @@ var path = require('path');
 var semver = require('semver');
 var Project = require('fixturify-project');
 
-describe('resolve-package-cache', function() {
+describe('resolve-package-path', function() {
   beforeEach(function() {
     fs.removeSync(FIXTURE_ROOT);
   });
@@ -18,7 +18,7 @@ describe('resolve-package-cache', function() {
     fs.removeSync(FIXTURE_ROOT);
   });
 
-  it('exposes it\'s cache', function() {
+  it('exposes its cache', function() {
     expect(resolvePackagePath._CACHE).to.be.ok;
     expect(resolvePackagePath._resetCache).to.be.a('function');
   });
