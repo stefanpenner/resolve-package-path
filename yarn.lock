@@ -1194,11 +1194,6 @@ pathval@^1.1.0:
   resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
   integrity sha1-uULm1L3mUwBe9rcTYd74cn0GReA=
 
-pnpapi@^0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/pnpapi/-/pnpapi-0.0.0.tgz#90fe6bd18be67d3bb39cc93cb67188b1bf63a384"
-  integrity sha512-UemFU6zCZ4MZwsBcgmcFZX71nnNUUCwxKxdxctxfiEDB39SOzvUUJ28g+Arx5JF8kO3N0yxyjY/4+N6+jBFqZw==
-
 posix-character-classes@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/posix-character-classes/-/posix-character-classes-0.1.1.tgz#01eac0fe3b5af71a2a6c02feabb8c1fef7e00eab"
