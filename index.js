@@ -82,7 +82,7 @@ module.exports._resetCache = function() {
 };
 
 Object.defineProperty(module.exports, '_CACHE', {
-  get() {
+  get: function() {
     return CACHE;
   }
 });
