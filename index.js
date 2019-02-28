@@ -62,7 +62,7 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
       // current release. This is due to Yarn 1.13 and resolve interoperating
       // together seemlessly.
       pkgPath = pnp
-        ? pnp.resolveToUnqualified(`${target}/package.json`, basedir)
+        ? pnp.resolveToUnqualified( target + '/package.json', basedir)
         : customResolvePackagePath(cache, target, basedir);
     } catch (e) {
       if (ALLOWED_ERROR_CODES[e.code] === true) {
