@@ -30,6 +30,10 @@ resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') =
 ## Advanced usage
 
 
+### Preseving Symlinks
+
+Node supports `--preserve-symlinks` and `NODE_PRESERVE_SYMLINKS=1` for compatibility this library respects these.
+
 ### Disable default caching
 
 Although by default `resolve-package-path` caches or memoizes results, this feature can be disabled:
