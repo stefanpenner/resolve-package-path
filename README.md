@@ -39,16 +39,16 @@ Node supports `--preserve-symlinks` and `NODE_PRESERVE_SYMLINKS=1` for compatibi
 Although by default `resolve-package-path` caches or memoizes results, this feature can be disabled:
 
 ```js
-const resolvePackage = require('resolve-package-path');
+const resolvePackagePath = require('resolve-package-path');
 
-resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', false) => // uncached result /path/to/rsvp.json or null
+resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', false) => // uncached result /path/to/rsvp.json or null
 ```
 
 ### Purge the cache
 
 ```js
-const resolvePackage = require('resolve-package-path');
-resolvePackage._resetCache();
+const resolvePackagePath = require('resolve-package-path');
+resolvePackagePath._resetCache();
 ```
 
 ### Provide an alternative cache
@@ -63,8 +63,8 @@ cache = {
   REAL_DIRECTORY_PATH: new Map()
 };
 
-const resolvePackage = require('resolve-package-path');
-resolvePackage('rsvp', 'path/to/start/from', cache);
+const resolvePackagePath = require('resolve-package-path');
+resolvePackagePath('rsvp', 'path/to/start/from', cache);
 ```
 
 ### Use internal helper functions
