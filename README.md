@@ -21,16 +21,16 @@ yarn add resolve-package-path
 ```
 
 ```js
-const resolvePackage = require('resolve-package-path');
+const resolvePackagePath = require('resolve-package-path');
 
-resolvePackage('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') => // /path/to/rsvp.json or null
+resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') => // /path/to/rsvp.json or null
 ```
 
 
 ## Advanced usage
 
 
-### Preseving Symlinks
+### Preserving Symlinks
 
 Node supports `--preserve-symlinks` and `NODE_PRESERVE_SYMLINKS=1` for compatibility this library respects these.
 
