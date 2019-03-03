@@ -14,6 +14,8 @@ var ALLOWED_ERROR_CODES = {
 var pnp;
 var CacheGroup = require('./lib/cache-group');
 var CACHE = new CacheGroup();
+var getRealFilePath = customResolvePackagePath._getRealFilePath;
+var getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
 
 try {
   pnp = require('pnpapi');
@@ -88,9 +90,9 @@ Object.defineProperty(module.exports, '_CACHE', {
 });
 
 module.exports.getRealFilePath = function(filePath) {
-  return _getRealDirectoryPath(CACHE.REAL_FILE_PATH, filePath);
+  return getRealFilePath(CACHE.REAL_FILE_PATH, filePath);
 };
 
 module.exports.getRealDirectoryPath = function(directoryhPath) {
-  return _getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
+  return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
 };

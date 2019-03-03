@@ -26,6 +26,10 @@ describe('resolve-package-path', function() {
   it('exposes helper methods', function() {
     expect(resolvePackagePath.getRealFilePath).to.be.a('function');
     expect(resolvePackagePath.getRealDirectoryPath).to.be.a('function');
+
+    // smoke tests, real tests are unit tests of the underlying utilities
+    expect(resolvePackagePath.getRealFilePath(__filename)).to.eql(__filename);
+    expect(resolvePackagePath.getRealDirectoryPath(__dirname)).to.eql(__dirname);
   });
 
   it('appears to reset cache', function() {
