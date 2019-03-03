@@ -23,6 +23,11 @@ describe('resolve-package-path', function() {
     expect(resolvePackagePath._resetCache).to.be.a('function');
   });
 
+  it('exposes helper methods', function() {
+    expect(resolvePackagePath.getRealFilePath).to.be.a('function');
+    expect(resolvePackagePath.getRealDirectoryPath).to.be.a('function');
+  });
+
   it('appears to reset cache', function() {
     resolvePackagePath._CACHE.PATH.set('hi', 1);
     expect(resolvePackagePath._CACHE.PATH.has('hi')).eql(true);
