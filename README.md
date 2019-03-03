@@ -66,3 +66,10 @@ cache = {
 const resolvePackage = require('resolve-package-path');
 resolvePackage('rsvp', 'path/to/start/from', cache);
 ```
+
+### Using internal helpers
+
+For consumers who also do `getRealFilePath`  or
+`getRealDirectoryPath` calls on relevant paths, we expose them as utilities.
+These utilties ensure identical functionality to resolve-package-path, and a
+shared cache, which may help reduce IO.

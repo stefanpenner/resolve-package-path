@@ -86,3 +86,11 @@ Object.defineProperty(module.exports, '_CACHE', {
     return CACHE;
   }
 });
+
+module.exports.getRealFilePath = function(filePath) {
+  return _getRealDirectoryPath(CACHE.REAL_FILE_PATH, filePath);
+};
+
+module.exports.getRealDirectoryPath = function(directoryhPath) {
+  return _getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
+};
