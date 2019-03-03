@@ -30,7 +30,7 @@ resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from
 ## Advanced usage
 
 
-### Preserving Symlinks
+### Preserve Symlinks
 
 Node supports `--preserve-symlinks` and `NODE_PRESERVE_SYMLINKS=1` for compatibility this library respects these.
 
@@ -51,7 +51,7 @@ const resolvePackage = require('resolve-package-path');
 resolvePackage._resetCache();
 ```
 
-### Providing an alternative cache
+### Provide an alternative cache
 
 In some advanced circumtances, you may want to gain access to the cache to share between more systems.
 In that case, a cache instance of the following form can be provided as a third argument:
@@ -67,7 +67,7 @@ const resolvePackage = require('resolve-package-path');
 resolvePackage('rsvp', 'path/to/start/from', cache);
 ```
 
-### Using internal helpers
+### Use internal helper functions
 
 For consumers who also do `getRealFilePath`  or
 `getRealDirectoryPath` calls on relevant paths, we expose them as utilities.
