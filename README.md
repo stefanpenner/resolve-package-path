@@ -56,7 +56,7 @@ resolvePackagePath._resetCache();
 In some advanced circumtances, you may want to gain access to the cache to share between more systems.
 In that case, a cache instance of the following form can be provided as a third argument:
 
-```
+```js
 cache = {
   RESOLVED_PACKAGE_PATH: new Map(),
   REAL_FILE_PATH: new Map(),
