@@ -1,7 +1,7 @@
 'use strict';
 
-var customResolvePackagePath = require('./lib/resolve-package-path');
-var ALLOWED_ERROR_CODES = {
+const customResolvePackagePath = require('./lib/resolve-package-path');
+const ALLOWED_ERROR_CODES: {[key: string]: boolean} = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
 
@@ -11,11 +11,12 @@ var ALLOWED_ERROR_CODES = {
   MISSING_DEPENDENCY: true
 };
 
-var pnp;
-var CacheGroup = require('./lib/cache-group');
-var CACHE = new CacheGroup();
-var getRealFilePath = customResolvePackagePath._getRealFilePath;
-var getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
+import CacheGroup = require('./lib/cache-group');
+const getRealFilePath = customResolvePackagePath._getRealFilePath;
+const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
+
+let CACHE = new CacheGroup();
+let pnp: any;
 
 try {
   pnp = require('pnpapi');
@@ -37,8 +38,9 @@ try {
  *
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
-module.exports = function resolvePackagePath(target, basedir, _cache) {
-  var cache;
+export = resolvePackagePath;
+function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup | boolean) {
+  let cache;
 
   if (_cache === undefined || _cache === null || _cache === true) {
     // if no cache specified, or if cache is true then use the global cache
@@ -52,23 +54,27 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
     cache = _cache;
   }
 
-  var key = target + '\x00' + basedir;
+  const key = target + '\x00' + basedir;
 
-  var pkgPath;
+  let pkgPath;
 
   if (cache.PATH.has(key)) {
-    pkgPath = cache.PATH.get(key, pkgPath);
+    pkgPath = cache.PATH.get(key);
   } else {
     try {
       // the custom `pnp` code here can be removed when yarn 1.13 is the
       // current release. This is due to Yarn 1.13 and resolve interoperating
       // together seemlessly.
       pkgPath = pnp
-        ? pnp.resolveToUnqualified( target + '/package.json', basedir)
+        ? pnp.resolveToUnqualified(target + '/package.json', basedir)
         : customResolvePackagePath(cache, target, basedir);
     } catch (e) {
-      if (ALLOWED_ERROR_CODES[e.code] === true) {
-        pkgPath = null;
+      if (e !== null && typeof e === 'object') {
+        const code: keyof typeof ALLOWED_ERROR_CODES = e.code;
+        if (ALLOWED_ERROR_CODES[code] === true) {
+          pkgPath = null;
+        }
+        throw e;
       } else {
         throw e;
       }
@@ -79,20 +85,20 @@ module.exports = function resolvePackagePath(target, basedir, _cache) {
   return pkgPath;
 }
 
-module.exports._resetCache = function() {
+resolvePackagePath._resetCache = function() {
   CACHE = new CacheGroup();
 };
 
-Object.defineProperty(module.exports, '_CACHE', {
+Object.defineProperty(resolvePackagePath, '_CACHE', {
   get: function() {
     return CACHE;
   }
 });
 
-module.exports.getRealFilePath = function(filePath) {
+module.exports.getRealFilePath = function(filePath: string) {
   return getRealFilePath(CACHE.REAL_FILE_PATH, filePath);
 };
 
-module.exports.getRealDirectoryPath = function(directoryhPath) {
+module.exports.getRealDirectoryPath = function(directoryhPath: string) {
   return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
 };

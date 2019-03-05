@@ -1,6 +1,6 @@
 'use strict';
 
-var Cache = require('./cache');
+import Cache = require('./cache');
 
 /*
  * CacheGroup is used to both speed up and ensure consistency of hashForDep.
@@ -43,11 +43,12 @@ var Cache = require('./cache');
  * like path.join() or path.resolve(). We do nothing beyond that (e.g., we do not attempt
  * to force the paths into POSIX style.)
  */
-
-module.exports = function CacheGroup() {
-  this.MODULE_ENTRY = new Cache();
-  this.PATH = new Cache();
-  this.REAL_FILE_PATH = new Cache();
-  this.REAL_DIRECTORY_PATH = new Cache();
-  Object.freeze(this);
+export = class CacheGroup {
+  MODULE_ENTRY = new Cache();
+  PATH = new Cache();
+  REAL_FILE_PATH = new Cache();
+  REAL_DIRECTORY_PATH = new Cache();
+  constructor() {
+    Object.freeze(this);
+  }
 };

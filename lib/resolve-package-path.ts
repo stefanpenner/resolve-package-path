@@ -2,9 +2,12 @@
 // credit goes to https://github.com/davecombs
 // extracted in part from: https://github.com/stefanpenner/hash-for-dep/blob/15b2ebcf22024ceb2eb7907f8c412ae40f87b15e/lib/resolve-package-path.js#L1
 //
-var fs = require('fs');
-var path = require('path');
-var pathRoot = require('path-root');
+import fs = require('fs');
+import path = require('path');
+import pathRoot = require('path-root');
+
+import Cache = require('./cache');
+import CacheGroup = require('./cache-group');
 
 /*
  * Define a regex that will match against the 'name' value passed into
@@ -19,9 +22,10 @@ var pathRoot = require('path-root');
  * Unix/Linux or Windows"
  */
 
-var ABSOLUTE_OR_RELATIVE_PATH_REGEX = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\/\\])/;
+const ABSOLUTE_OR_RELATIVE_PATH_REGEX = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\/\\])/;
 
-var PRESERVE_SYMLINKS = require('./should-preserve-symlinks')(process);
+import shouldPreserveSymlinks = require('./should-preserve-symlinks');
+const PRESERVE_SYMLINKS = shouldPreserveSymlinks(process);
 /*
  * Resolve the real path for a file. Return null if does not
  * exist or is not a file or FIFO, return the real path otherwise.
@@ -40,16 +44,16 @@ var PRESERVE_SYMLINKS = require('./should-preserve-symlinks')(process);
  * been normalized, but not necessarily resolved to a real path).
  * @return {String} real path or null
  */
-function _getRealFilePath(realFilePathCache, filePath) {
+function _getRealFilePath(realFilePathCache: Cache, filePath: string) {
 
   if (realFilePathCache.has(filePath)) {
     return realFilePathCache.get(filePath);  // could be null
   }
 
-  var realPath = null;  // null = 'FILE NOT FOUND'
+  let realPath = null;  // null = 'FILE NOT FOUND'
 
   try {
-    var stat = fs.statSync(filePath);
+    const stat = fs.statSync(filePath);
 
     // I don't know if Node would handle having the filePath actually
     // be a FIFO, but as the following is also part of the node-resolution
@@ -82,15 +86,15 @@ function _getRealFilePath(realFilePathCache, filePath) {
  * been normalized, but not necessarily resolved to a real path).
  * @return {String} real path or null
  */
-function _getRealDirectoryPath(realDirectoryPathCache, directoryPath) {
+function _getRealDirectoryPath(realDirectoryPathCache: Cache, directoryPath: string) {
   if (realDirectoryPathCache.has(directoryPath)) {
     return realDirectoryPathCache.get(directoryPath);  // could be null
   }
 
-  var realPath = null;
+  let realPath = null;
 
   try {
-    var stat = fs.statSync(directoryPath);
+    const stat = fs.statSync(directoryPath);
 
     if (stat.isDirectory()) {
       if (PRESERVE_SYMLINKS) {
@@ -140,20 +144,19 @@ function _getRealDirectoryPath(realDirectoryPathCache, directoryPath) {
  *
  * @result the path to the actual package.json file that's found, or null if not.
  */
-function _findPackagePath(realFilePathCache, name, dir) {
+function _findPackagePath(realFilePathCache: Cache, name: string, dir: string) {
 
-  var fsRoot = pathRoot(dir);
-
-  var currPath = dir;
+  const fsRoot = pathRoot(dir);
+  let currPath = dir;
 
   while (currPath !== fsRoot) {
     // when testing for 'node_modules', need to allow names like NODE_MODULES,
     // which can occur with case-insensitive OSes.
-    var endsWithNodeModules = path.basename(currPath).toLowerCase() === 'node_modules';
+    let endsWithNodeModules = path.basename(currPath).toLowerCase() === 'node_modules';
 
-    var filePath = path.join(currPath, (endsWithNodeModules ? '' : 'node_modules'), name);
+    let filePath = path.join(currPath, (endsWithNodeModules ? '' : 'node_modules'), name);
 
-    var realPath = _getRealFilePath(realFilePathCache, filePath);
+    let realPath = _getRealFilePath(realFilePathCache, filePath);
 
     if (realPath) {
       return realPath;
@@ -193,7 +196,8 @@ function _findPackagePath(realFilePathCache, name, dir) {
  * Note: 'name' is expected in the format expected for require(x), i.e., it is
  * resolved using the Node path-normalization rules.
  */
-module.exports = function resolvePackagePath(caches, name, dir) {
+export = resolvePackagePath;
+function resolvePackagePath(caches: CacheGroup, name: string, dir: string) {
   if (typeof name !== 'string' || name.length === 0) {
     throw new TypeError('resolvePackagePath: \'name\' must be a non-zero-length string.');
   }
@@ -216,7 +220,7 @@ module.exports = function resolvePackagePath(caches, name, dir) {
 
   if (!absoluteStart) {
     var error = new TypeError('resolvePackagePath: \'dir\' or one of the parent directories in its path must refer to a valid directory.');
-    error.code = 'MODULE_NOT_FOUND';
+    (error as any).code = 'MODULE_NOT_FOUND';
     throw error;
   }
 
@@ -225,7 +229,7 @@ module.exports = function resolvePackagePath(caches, name, dir) {
     // if name is itself an absolute path (either Linux or Windows) it will
     // return that (normalized), ignoring absolutePath. If name is a relative
     // path, it will be combined with absolutePath and the result normalized.
-    var res = path.resolve(absoluteStart, name);
+    let res = path.resolve(absoluteStart, name);
     if (name = '..' || name.slice(-1) === '/') {
       res += '/';  // (path.resolve strips trailing /, add back)
     }
@@ -238,6 +242,6 @@ module.exports = function resolvePackagePath(caches, name, dir) {
   }
 };
 
-module.exports._findPackagePath = _findPackagePath;
-module.exports._getRealFilePath = _getRealFilePath;
-module.exports._getRealDirectoryPath = _getRealDirectoryPath;
+resolvePackagePath._findPackagePath = _findPackagePath;
+resolvePackagePath._getRealFilePath = _getRealFilePath;
+resolvePackagePath._getRealDirectoryPath = _getRealDirectoryPath;

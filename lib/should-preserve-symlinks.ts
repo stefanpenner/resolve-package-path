@@ -1,9 +1,9 @@
 'use strict';
 
-function includes(array, entry) {
-  var result = false;
+function includes(array: [string], entry: string) {
+  let result = false;
 
-  for (var  i =0; i < array.length; i++) {
+  for (let i =0; i < array.length; i++) {
     if (array[i] === entry) {
       return true;
     }
@@ -13,6 +13,6 @@ function includes(array, entry) {
 /*
  * utility to detect if node is respective symlinks or not
  */
-module.exports = function(process) {
+export = function(process: any) {
   return !!process.env.NODE_PRESERVE_SYMLINKS || includes(process.execArgv, '--preserve-symlinks');
 };
