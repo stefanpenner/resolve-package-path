@@ -95,10 +95,10 @@ Object.defineProperty(resolvePackagePath, '_CACHE', {
   }
 });
 
-module.exports.getRealFilePath = function(filePath: string) {
+resolvePackagePath.getRealFilePath = function(filePath: string) {
   return getRealFilePath(CACHE.REAL_FILE_PATH, filePath);
 };
 
-module.exports.getRealDirectoryPath = function(directoryhPath: string) {
+resolvePackagePath.getRealDirectoryPath = function(directoryhPath: string) {
   return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
 };
