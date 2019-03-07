@@ -196,8 +196,7 @@ function _findPackagePath(realFilePathCache: Cache, name: string, dir: string) {
  * Note: 'name' is expected in the format expected for require(x), i.e., it is
  * resolved using the Node path-normalization rules.
  */
-export = resolvePackagePath;
-function resolvePackagePath(caches: CacheGroup, name: string, dir: string) {
+function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
   if (typeof name !== 'string' || name.length === 0) {
     throw new TypeError('resolvePackagePath: \'name\' must be a non-zero-length string.');
   }
@@ -242,6 +241,8 @@ function resolvePackagePath(caches: CacheGroup, name: string, dir: string) {
   }
 };
 
+export = resolvePackagePath;
 resolvePackagePath._findPackagePath = _findPackagePath;
 resolvePackagePath._getRealFilePath = _getRealFilePath;
 resolvePackagePath._getRealDirectoryPath = _getRealDirectoryPath;
+

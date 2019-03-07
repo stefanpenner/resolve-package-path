@@ -1,7 +1,8 @@
 'use strict';
 
-var shouldPreserveSymlinks = require('../lib/should-preserve-symlinks');
-var expect = require('chai').expect;
+import shouldPreserveSymlinks = require('../lib/should-preserve-symlinks');
+import chai = require('chai');
+const expect = chai.expect;
 
 describe('shouldPreserveSymlinks', function() {
   it('works', function() {

@@ -88,7 +88,9 @@ function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup
 resolvePackagePath._resetCache = function() {
   CACHE = new CacheGroup();
 };
-
+module resolvePackagePath {
+  export let _CACHE: CacheGroup;
+}
 Object.defineProperty(resolvePackagePath, '_CACHE', {
   get: function() {
     return CACHE;
@@ -102,3 +104,4 @@ resolvePackagePath.getRealFilePath = function(filePath: string) {
 resolvePackagePath.getRealDirectoryPath = function(directoryhPath: string) {
   return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
 };
+

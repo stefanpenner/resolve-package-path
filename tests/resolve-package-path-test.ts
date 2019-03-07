@@ -1,21 +1,20 @@
 'use strict';
-var path = require('path');
-var assert = require('chai').assert;
-var resolvePackagePath = require('../');
-var _cache = resolvePackagePath._CACHE.MODULE_ENTRY;
-var resolvePackagePath = require('../lib/resolve-package-path');
-var Cache = require('../lib/cache');
-var CacheGroup = require('../lib/cache-group');
-var fixturesPath = path.join(__dirname, 'fixtures');
+import path = require('path');
+import chai = require('chai');
+import resolvePackagePath = require('../lib/resolve-package-path');
+import Cache = require('../lib/cache');
+import CacheGroup = require('../lib/cache-group');
+import fs = require('fs');
+import Project = require('fixturify-project');
 
-var fs = require('fs');
-var Project = require('fixturify-project');
+const fixturesPath = path.join(__dirname, 'fixtures');
+const assert = chai.assert;
+const _cache = new Cache();
 
 describe('resolvePackagePath', function() {
-  var project, foo, fooBar, dedupped, linked, linkedBar, unlinked;
+  let project: Project, foo: Project, fooBar:Project, dedupped: Project, linked: Project, linkedBar: Project, unlinked: Project;
 
   beforeEach(function() {
-
     project = new Project('example', '0.0.0', project => {
       dedupped = project.addDependency('dedupped', '1.0.0', dedupped => {
         dedupped.addDependency('dedupped-child', '1.0.0');
@@ -34,7 +33,7 @@ describe('resolvePackagePath', function() {
     fs.symlinkSync('../../linked', `${foo.baseDir}/node_modules/linked`);
     linked = {
       baseDir: `${foo.baseDir}/node_modules/linked`
-    }
+    } as Project;
   });
 
   afterEach(function() {
@@ -46,7 +45,7 @@ describe('resolvePackagePath', function() {
 
 
     it('finds linked package.json', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'linked/node_modules/bar/package.json',
                                                        fooBar.baseDir);
       assert.equal(result,
@@ -55,21 +54,21 @@ describe('resolvePackagePath', function() {
     });
 
     it('does not find invalid package.json file name', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'dedupped/package2.json',
                                                         fooBar.baseDir);
       assert.isNull(result, 'invalid package.json should return null');
     });
 
     it('does not find invalid package file name', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'dedupped2/package.json',
                                                        fooBar.baseDir);
       assert.isNull(result, 'invalid package filename should return null');
     });
 
     it('finds child package.json', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'bar/package.json',
                                                        foo.baseDir);
       assert.equal(result,
@@ -78,7 +77,7 @@ describe('resolvePackagePath', function() {
     });
 
     it('finds parent package.json', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'foo/package.json',
                                                        fooBar.baseDir);
       assert.equal(result,
@@ -90,7 +89,7 @@ describe('resolvePackagePath', function() {
     // during resolvePackagePath when the path does not start with './'.
 
     it('finds uncle package.json', function() {
-      var result = resolvePackagePath._findPackagePath(_cache,
+      let result = resolvePackagePath._findPackagePath(_cache,
                                                        'dedupped/package.json',
                                                        fooBar.baseDir);
       assert.equal(result, path.join(dedupped.baseDir, 'package.json'), '"uncle" package.json should resolve correctly');
@@ -98,23 +97,23 @@ describe('resolvePackagePath', function() {
   });
 
   describe('._getRealDirectoryPath', function() {
-    var cache;
-    var unlinkedDirPath = path.join(fixturesPath, 'node_modules', 'linked');
+    let cache: Cache;
+    let unlinkedDirPath = path.join(fixturesPath, 'node_modules', 'linked');
 
     beforeEach(function() {
       cache = new Cache()
     });
 
     it('resolves linked dir through link to unlinked dir', function() {
-      var result = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);
+      let result = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);
       assert.equal(result, unlinked.baseDir, 'link should resolve to real path package.json');
       assert.equal(cache.size, 1, 'cache should contain 1 entry');
       assert.equal(cache.get(linked.baseDir), unlinked.baseDir, 'cached entry from linked path should be to unlinked path');
     });
 
     it('resolves unlinked dir to itself', function() {
-      var result1 = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);  // repeat just to load an entry
-      var result2 = resolvePackagePath._getRealDirectoryPath(cache, unlinked.baseDir);
+      let result1 = resolvePackagePath._getRealDirectoryPath(cache, linked.baseDir);  // repeat just to load an entry
+      let result2 = resolvePackagePath._getRealDirectoryPath(cache, unlinked.baseDir);
 
       assert.equal(cache.size, 2, 'cache should now contain 2 entries');
       assert.equal(result1, result2, '2 cache entries should both have the same value (different keys)');
@@ -123,36 +122,36 @@ describe('resolvePackagePath', function() {
     });
 
     it('resolves an existing file as null (it is not a directory)', function() {
-      var filePath = path.join(unlinkedDirPath, 'index.js');
-      var result = resolvePackagePath._getRealDirectoryPath(cache, filePath);
+      let filePath = path.join(unlinkedDirPath, 'index.js');
+      let result = resolvePackagePath._getRealDirectoryPath(cache, filePath);
       assert.isNull(result, 'reference to a file should return null');
       assert.isNull(cache.get(filePath), 'cache reference to file should return null');
     });
 
     it('resolves a non-existent path as null', function() {
-      var result = resolvePackagePath._getRealDirectoryPath(cache, unlinkedDirPath + '2');
+      let result = resolvePackagePath._getRealDirectoryPath(cache, unlinkedDirPath + '2');
       assert.isNull(result, 'reference to a non-existent path correctly returns null');
     });
   });
 
   describe('._getRealFilePath', function() {
     // create a temporary cache to make sure that we're actually caching things.
-    var cache;
+    let cache: Cache;
 
     beforeEach(function() {
       cache = new Cache();
     });
 
     it('resolves linked package.json through link to unlinked', function() {
-      var result = resolvePackagePath._getRealFilePath(cache, path.join(linked.baseDir, 'package.json'));
+      let result = resolvePackagePath._getRealFilePath(cache, path.join(linked.baseDir, 'package.json'));
       assert.equal(result, path.join(unlinked.baseDir, 'package.json'), 'link should resolve to real path package.json');
       assert.equal(cache.size, 1, 'cache should contain 1 entry');
       assert.equal(cache.get(path.join(linked.baseDir, 'package.json')), path.join(unlinked.baseDir, 'package.json'), 'cached entry from linked path should be to unlinked path');
     });
 
     it('resolves unlinked package.json to itself', function() {
-      var result1 = resolvePackagePath._getRealFilePath(cache, path.join(linked.baseDir, 'package.json'));  // repeat just to load an entry
-      var result2 = resolvePackagePath._getRealFilePath(cache, path.join(unlinked.baseDir, 'package.json'));
+      let result1 = resolvePackagePath._getRealFilePath(cache, path.join(linked.baseDir, 'package.json'));  // repeat just to load an entry
+      let result2 = resolvePackagePath._getRealFilePath(cache, path.join(unlinked.baseDir, 'package.json'));
       assert.equal(cache.size, 2, 'cache should now contain 2 entries');
       assert.equal(result1, result2, '2 cache entries should both have the same value (different keys)');
       assert.equal(result2, path.join(unlinked.baseDir, 'package.json'), 'resolving the unlinked path should not change the value');
@@ -160,26 +159,26 @@ describe('resolvePackagePath', function() {
     });
 
     it('resolves an existing directory as null (it is not a file)', function() {
-      var result = resolvePackagePath._getRealFilePath(cache, project.root);
+      let result = resolvePackagePath._getRealFilePath(cache, project.root);
       assert.isNull(result, 'reference to a directory should return null');
       assert.isNull(cache.get(project.root), 'cache reference to directory should return null');
     });
 
     it('resolves a non-existent path as null', function() {
-      var result = resolvePackagePath._getRealFilePath(cache, project.root + '2');
+      let result = resolvePackagePath._getRealFilePath(cache, project.root + '2');
       assert.isNull(result, 'reference to a non-existent path correctly returns null');
     });
   });
 
   describe('resolvePackagePath', function() {
-    var caches;
+    let caches: CacheGroup;
 
     beforeEach(function() {
       caches = new CacheGroup();
     });
 
     it('no module name', function() {
-      assert.throws(function() {return resolvePackagePath(caches, null, '/');}, TypeError);
+      assert.throws(() => resolvePackagePath(caches, undefined, '/'), TypeError);
     });
 
     it('baseDir were the end of the path does not exist, but the start does and if resolution proceeds would be a hit', function() {
@@ -191,27 +190,27 @@ describe('resolvePackagePath', function() {
     });
 
     it('linked directory as name', function() {
-      var result = resolvePackagePath(caches, linked.baseDir, null);
+      let result = resolvePackagePath(caches, linked.baseDir, undefined);
       assert.equal(path.join(unlinked.baseDir, 'package.json'), result, 'should resolve to unlinked "linked/package.json"');
     });
 
     it('through linked directory as dir to node_modules package', function() {
-      var result = resolvePackagePath(caches, 'bar', linked.baseDir);
+      let result = resolvePackagePath(caches, 'bar', linked.baseDir);
       assert.equal(path.join(unlinked.baseDir, 'node_modules', 'bar', 'package.json'), result, 'should resolve to unlinked "linked/node_ odules/bar/package.json"');
     });
 
     it('.. relative path through "linked" directory', function() {
-      var result = resolvePackagePath(caches, '../linked', fooBar.baseDir);
+      let result = resolvePackagePath(caches, '../linked', fooBar.baseDir);
       assert.equal(path.join(unlinked.baseDir, 'package.json'), result, 'should resolve to unlinked "linked/package.json"');
     });
 
     it('. relative path ', function() {
-      var result = resolvePackagePath(caches, '..', path.join(foo.baseDir, 'node_modules'));
+      let result = resolvePackagePath(caches, '..', path.join(foo.baseDir, 'node_modules'));
       assert.equal(path.join(foo.baseDir, 'package.json'), result, 'should resolve to "foo/package.json"');
     });
 
     it('. relative empty path ', function() {
-      var result = resolvePackagePath(caches, '.', foo.baseDir);
+      let result = resolvePackagePath(caches, '.', foo.baseDir);
       assert.equal(path.join(foo.baseDir, 'package.json'), result, 'should resolve to "foo/package.json"');
     });
   });
