@@ -1,13 +1,14 @@
 'use strict';
 
-var resolvePackagePath = require('../');
-var Project = require('fixturify-project');
-var fs = require('fs-extra');
-var FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`
-var expect = require('chai').expect;
-var path = require('path');
-var semver = require('semver');
-var Project = require('fixturify-project');
+import resolvePackagePath = require('../');
+import Project = require('fixturify-project');
+import fs = require('fs-extra');
+import chai = require('chai');
+import path = require('path');
+import semver = require('semver');
+
+const expect = chai.expect;
+const FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`
 
 describe('resolve-package-path', function() {
   beforeEach(function() {
@@ -40,16 +41,19 @@ describe('resolve-package-path', function() {
   });
 
   describe('npm usage', function() {
-    it('smoke test', function() {
-      var rsvp, a, orange, apple;
-      var app = new Project('app', '3.1.1',  app => {
+    let app: Project, rsvp: Project, a: Project, orange: Project, apple: Project;
+
+    beforeEach(function() {
+      app = new Project('app', '3.1.1',  app => {
         rsvp = app.addDependency('rsvp', '3.2.2', rsvp => {
           a = rsvp.addDependency('a', '1.1.1');
         });
         orange = app.addDependency('orange', '1.0.0');
         apple = app.addDependency('apple', '1.0.0');
       });
+    });
 
+    it('smoke test', function() {
       app.writeSync();
 
       expect(resolvePackagePath('app',    app.root)).    to.eql(null);
@@ -68,8 +72,8 @@ describe('resolve-package-path', function() {
   if (semver.gte(process.versions.node, '8.0.0')) {
     describe('yarn pnp usage', function() {
       this.timeout(30000); // in-case the network IO is slow
-      var app;
-      var execa = require('execa');
+      let app: Project;
+      const execa = require('execa');
 
       beforeEach(function() {
         app = new Project('dummy', '1.0.0', app => {
