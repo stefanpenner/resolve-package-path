@@ -1,6 +1,6 @@
 'use strict';
 
-import resolvePackagePath = require('../');
+import resolvePackagePath = require('../index');
 import Project = require('fixturify-project');
 import fs = require('fs-extra');
 import chai = require('chai');
@@ -88,7 +88,7 @@ describe('resolve-package-path', function() {
           app.addDependency('ember-source-channel-url', '1.1.0');
           app.addDependency('resolve-package-path', 'link:' + path.join(__dirname, '..'));
           app.files = {
-            'test.js': 'require("resolve-package-path")("ember-source-channel-url", __dirname)'
+            'test.js': 'require("resolve-package-path")(process.argv[2], __dirname); console.log("success!");'
           };
         });
 
@@ -102,10 +102,20 @@ describe('resolve-package-path', function() {
         app.dispose();
       });
 
-      it('handles yarn pnp usage', function() {
-        execa.sync('yarn', ['test'], {
+      it('handles yarn pnp usage - package exists', function() {
+        let result = execa.sync('yarn', ['test', 'ember-source-channel-url'], {
           cwd: app.baseDir
         });
+
+        expect(result.stdout.toString()).includes('success!');
+      });
+
+      it('handles yarn pnp usage - package missing', function() {
+        let result = execa.sync('yarn', ['test', 'some-non-existent-package'], {
+          cwd: app.baseDir
+        });
+
+        expect(result.stdout.toString()).includes('success!');
       });
     });
   }
