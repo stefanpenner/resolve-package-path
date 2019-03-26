@@ -73,8 +73,9 @@ function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup
         const code: keyof typeof ALLOWED_ERROR_CODES = e.code;
         if (ALLOWED_ERROR_CODES[code] === true) {
           pkgPath = null;
+        } else {
+          throw e;
         }
-        throw e;
       } else {
         throw e;
       }
