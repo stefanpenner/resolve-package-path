@@ -39,7 +39,7 @@ try {
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
 export = resolvePackagePath;
-function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup | boolean) {
+function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup | boolean): string | null {
   let cache;
 
   if (_cache === undefined || _cache === null || _cache === true) {
