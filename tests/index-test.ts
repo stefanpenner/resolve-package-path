@@ -80,7 +80,7 @@ describe('resolve-package-path', function() {
           app.pkg.private = true;
           app.pkg.name
           app.pkg.scripts = {
-            test: "node -r ./.pnp.js ./test.js"
+            test: "node ./test.js"
           };
           app.pkg.installConfig = {
             pnp: true
