@@ -30,5 +30,8 @@
     "test": "yarn build && yarn test:js",
     "test:js": "mocha tests/*-test.js",
     "test:js:debug": "mocha debug tests/*-test.js"
+  },
+  "engines": {
+    "node": "8.* || 10.* || >= 12"
   }
 }
