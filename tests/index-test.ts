@@ -5,7 +5,6 @@ import Project = require('fixturify-project');
 import fs = require('fs-extra');
 import chai = require('chai');
 import path = require('path');
-import semver = require('semver');
 
 const expect = chai.expect;
 const FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`;
@@ -83,7 +82,7 @@ describe('resolve-package-path', function () {
     });
   });
 
-  if (semver.gte(process.versions.node, '8.0.0')) {
+  if (require('os').platform() !== 'win32') {
     describe('yarn pnp usage', function () {
       this.timeout(30000); // in-case the network IO is slow
       let app: Project;
