@@ -199,7 +199,7 @@ function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
   }
 
   // Perform tests similar to those in resolve.sync().
-  var basedir = dir || __dirname;
+  let basedir = dir || __dirname;
 
   // Ensure that basedir is an absolute path at this point. If it does not refer to
   // a real directory, go up the path until a real directory is found, or return an error.
@@ -208,14 +208,14 @@ function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
   // relative, path.resolve() will make it absolute by putting the current directory
   // before it, so it won't fail. If the path is already absolute, / will always be
   // valid, so again it won't fail.
-  var absoluteStart = path.resolve(basedir);
+  let absoluteStart = path.resolve(basedir);
 
   while (_getRealDirectoryPath(caches.REAL_DIRECTORY_PATH, absoluteStart) === null) {
     absoluteStart = path.dirname(absoluteStart);
   }
 
   if (!absoluteStart) {
-    var error = new TypeError(
+    let error = new TypeError(
       "resolvePackagePath: 'dir' or one of the parent directories in its path must refer to a valid directory.",
     );
     (error as any).code = 'MODULE_NOT_FOUND';
@@ -223,14 +223,7 @@ function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
   }
 
   if (ABSOLUTE_OR_RELATIVE_PATH_REGEX.test(name)) {
-    // path.resolve() is smart enough that given both absoluteStart and name
-    // if name is itself an absolute path (either Linux or Windows) it will
-    // return that (normalized), ignoring absolutePath. If name is a relative
-    // path, it will be combined with absolutePath and the result normalized.
     let res = path.resolve(absoluteStart, name);
-    if ((name = '..' || name.slice(-1) === '/')) {
-      res += '/'; // (path.resolve strips trailing /, add back)
-    }
     return _getRealFilePath(caches.REAL_FILE_PATH, path.join(res, 'package.json'));
 
     // XXX Do we need to handle the core(x) case too? Not sure.
