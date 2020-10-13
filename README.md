@@ -1,4 +1,4 @@
-# resolve-package-path
+# resolve-package-path ![CI](https://github.com/stefanpenner/resolve-package-path/workflows/CI/badge.svg)
 
 This project is special-purpose, made to resolve a package.json file
 given a specific module name and basedir to start searching from. It
