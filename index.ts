@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-const customResolvePackagePath = require('./lib/resolve-package-path');
-const ALLOWED_ERROR_CODES: {[key: string]: boolean} = {
+const customResolvePackagePath = require("./lib/resolve-package-path");
+const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
 
   // Yarn PnP Error Codes
   UNDECLARED_DEPENDENCY: true,
   MISSING_PEER_DEPENDENCY: true,
-  MISSING_DEPENDENCY: true
+  MISSING_DEPENDENCY: true,
 };
 
-import CacheGroup = require('./lib/cache-group');
+import CacheGroup = require("./lib/cache-group");
 const getRealFilePath = customResolvePackagePath._getRealFilePath;
 const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
 
@@ -19,7 +19,7 @@ let CACHE = new CacheGroup();
 let pnp: any;
 
 try {
-  pnp = require('pnpapi');
+  pnp = require("pnpapi");
 } catch (error) {
   // not in Yarn PnP; not a problem
 }
@@ -39,7 +39,11 @@ try {
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
 export = resolvePackagePath;
-function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup | boolean): string | null {
+function resolvePackagePath(
+  target: string,
+  basedir: string,
+  _cache?: CacheGroup | boolean
+): string | null {
   let cache;
 
   if (_cache === undefined || _cache === null || _cache === true) {
@@ -54,7 +58,7 @@ function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup
     cache = _cache;
   }
 
-  const key = target + '\x00' + basedir;
+  const key = target + "\x00" + basedir;
 
   let pkgPath;
 
@@ -64,12 +68,12 @@ function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup
     try {
       // the custom `pnp` code here can be removed when yarn 1.13 is the
       // current release. This is due to Yarn 1.13 and resolve interoperating
-      // together seemlessly.
+      // together seamlessly.
       pkgPath = pnp
-        ? pnp.resolveToUnqualified(target + '/package.json', basedir)
+        ? pnp.resolveToUnqualified(target + "/package.json", basedir)
         : customResolvePackagePath(cache, target, basedir);
     } catch (e) {
-      if (e !== null && typeof e === 'object') {
+      if (e !== null && typeof e === "object") {
         const code: keyof typeof ALLOWED_ERROR_CODES = e.code;
         if (ALLOWED_ERROR_CODES[code] === true) {
           pkgPath = null;
@@ -86,23 +90,22 @@ function resolvePackagePath(target: string, basedir: string, _cache?: CacheGroup
   return pkgPath;
 }
 
-resolvePackagePath._resetCache = function() {
+resolvePackagePath._resetCache = function () {
   CACHE = new CacheGroup();
 };
 module resolvePackagePath {
   export let _CACHE: CacheGroup;
 }
-Object.defineProperty(resolvePackagePath, '_CACHE', {
-  get: function() {
+Object.defineProperty(resolvePackagePath, "_CACHE", {
+  get: function () {
     return CACHE;
-  }
+  },
 });
 
-resolvePackagePath.getRealFilePath = function(filePath: string) {
+resolvePackagePath.getRealFilePath = function (filePath: string) {
   return getRealFilePath(CACHE.REAL_FILE_PATH, filePath);
 };
 
-resolvePackagePath.getRealDirectoryPath = function(directoryhPath: string) {
-  return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryhPath);
+resolvePackagePath.getRealDirectoryPath = function (directoryPath: string) {
+  return getRealDirectoryPath(CACHE.REAL_DIRECTORY_PATH, directoryPath);
 };
-

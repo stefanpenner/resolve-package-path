@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function makeCache() {
   // object with no prototype
@@ -7,21 +7,20 @@ function makeCache() {
   // force the jit to immediately realize this object is a dictionary. This
   // should prevent the JIT from going wastefully one direction (fast mode)
   // then going another (dict mode) after
-  cache['_cache'] = 1;
-  delete cache['_cache'];
+  cache["_cache"] = 1;
+  delete cache["_cache"];
 
   return cache;
 }
 
 export = class Cache {
-  private _store: {[key: string]: string};
+  private _store: { [key: string]: string };
   constructor() {
     this._store = makeCache();
-
   }
 
   set(key: string, value: any) {
-    return this._store[key] = value;
+    return (this._store[key] = value);
   }
 
   get(key: string) {
@@ -37,6 +36,6 @@ export = class Cache {
   }
 
   get size() {
-      return Object.keys(this._store).length;
+    return Object.keys(this._store).length;
   }
 };

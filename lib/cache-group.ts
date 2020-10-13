@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-import Cache = require('./cache');
+import Cache = require("./cache");
 
 /*
  * CacheGroup is used to both speed up and ensure consistency of hashForDep.
