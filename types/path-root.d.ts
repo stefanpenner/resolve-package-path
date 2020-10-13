@@ -1,2 +1,2 @@
-declare function pathRoot (foo: string) : string;
+declare function pathRoot(foo: string): string;
 export = pathRoot;
