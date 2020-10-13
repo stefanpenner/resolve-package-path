@@ -1,5 +1,4 @@
-# resolve-package-path [![Build Status](https://travis-ci.org/stefanpenner/resolve-package-path.svg?branch=master)](https://travis-ci.org/stefanpenner/resolve-package-path) [![Build status](https://ci.appveyor.com/api/projects/status/7d7xx9ig4153lhh1/branch/master?svg=true)](https://ci.appveyor.com/project/embercli/resolve-package-path/branch/master)
-
+# resolve-package-path ![CI](https://github.com/stefanpenner/resolve-package-path/workflows/CI/badge.svg)
 
 This project is special-purpose, made to resolve a package.json file
 given a specific module name and basedir to start searching from. It
@@ -7,11 +6,11 @@ cannot and does not resolve anything else.
 
 To achieve its file-resolution performance, it does two specific things:
 
-* It memoizes results identically to node's `require`. Specifically,
+- It memoizes results identically to node's `require`. Specifically,
   for a given moduleName and baseDir it will, for the duration of the process,
   always return the exact same response.
 
-* It re-implements the parts of `require.resolve` needed to resolve package.json
+- It re-implements the parts of `require.resolve` needed to resolve package.json
   files ONLY. This removes unneeded I/O. (based on @davecombs approach)
 
 ## Usage
@@ -26,9 +25,7 @@ const resolvePackagePath = require('resolve-package-path');
 resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') => // /path/to/rsvp.json or null
 ```
 
-
 ## Advanced usage
-
 
 ### Preserve Symlinks
 
@@ -60,7 +57,7 @@ In that case, a cache instance of the following form can be provided as a third 
 cache = {
   RESOLVED_PACKAGE_PATH: new Map(),
   REAL_FILE_PATH: new Map(),
-  REAL_DIRECTORY_PATH: new Map()
+  REAL_DIRECTORY_PATH: new Map(),
 };
 
 const resolvePackagePath = require('resolve-package-path');
@@ -69,7 +66,7 @@ resolvePackagePath('rsvp', 'path/to/start/from', cache);
 
 ### Use internal helper functions
 
-For consumers who also do `getRealFilePath`  or
+For consumers who also do `getRealFilePath` or
 `getRealDirectoryPath` calls on relevant paths, we expose them as utilities.
 These utilties ensure identical functionality to resolve-package-path, and a
 shared cache, which may help reduce IO.
