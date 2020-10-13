@@ -1,4 +1,4 @@
-# resolve-package-path [![Build Status](https://travis-ci.org/stefanpenner/resolve-package-path.svg?branch=master)](https://travis-ci.org/stefanpenner/resolve-package-path) [![Build status](https://ci.appveyor.com/api/projects/status/7d7xx9ig4153lhh1/branch/master?svg=true)](https://ci.appveyor.com/project/embercli/resolve-package-path/branch/master)
+# resolve-package-path
 
 This project is special-purpose, made to resolve a package.json file
 given a specific module name and basedir to start searching from. It
