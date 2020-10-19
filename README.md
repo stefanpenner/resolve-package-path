@@ -1,8 +1,11 @@
 # resolve-package-path ![CI](https://github.com/stefanpenner/resolve-package-path/workflows/CI/badge.svg)
 
-This project is special-purpose, made to resolve a package.json file
-given a specific module name and basedir to start searching from. It
-cannot and does not resolve anything else.
+This project is special-purpose, made to resolve `package.json` files for:
+
+  - a given module name and basedir or
+  - a given basedir
+
+It cannot and does not resolve anything else.
 
 To achieve its file-resolution performance, it does two specific things:
 
@@ -22,7 +25,10 @@ yarn add resolve-package-path
 ```js
 const resolvePackagePath = require('resolve-package-path');
 
-resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') => // /path/to/rsvp.json or null
+resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from') // => /path/to/rsvp.json or null
+
+const { findUpPackagePath } = resolvePackagePath;
+findUpPackagePath('base-dir/to/start') // => path/to/package.json or null
 ```
 
 ## Advanced usage
@@ -38,7 +44,10 @@ Although by default `resolve-package-path` caches or memoizes results, this feat
 ```js
 const resolvePackagePath = require('resolve-package-path');
 
-resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', false) => // uncached result /path/to/rsvp.json or null
+resolvePackagePath('rsvp', 'base-dir/to/start/the/node_resolution-algorithm-from', false) // => uncached result /path/to/rsvp.json or null
+
+const { findUpPackagePath } = resolvePackagePath;
+findUpPackagePath('base-dir/to/start', false) // => path/to/package.json or null
 ```
 
 ### Purge the cache
@@ -59,9 +68,13 @@ cache = {
   REAL_FILE_PATH: new Map(),
   REAL_DIRECTORY_PATH: new Map(),
 };
+findUpCache = new Map();
 
 const resolvePackagePath = require('resolve-package-path');
 resolvePackagePath('rsvp', 'path/to/start/from', cache);
+
+const { findUpPackagePath } = resolvePackagePath;
+findUpPackagePath('base-dir/to/start', findUpCache) // => path/to/package.json or null
 ```
 
 ### Use internal helper functions

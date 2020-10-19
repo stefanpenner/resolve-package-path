@@ -2,11 +2,15 @@
 
 import resolvePackagePath = require('../index');
 import Project = require('fixturify-project');
+import Cache = require('../lib/cache');
+import fixturify = require('fixturify');
 import fs = require('fs-extra');
 import chai = require('chai');
 import path = require('path');
+import os = require('os');
 
 const expect = chai.expect;
+const { findUpPackagePath } = resolvePackagePath;
 const FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`;
 
 describe('resolve-package-path', function () {
@@ -133,4 +137,160 @@ describe('resolve-package-path', function () {
       });
     });
   }
+
+  describe('findUpPackagePath', function () {
+    let tmpDir: string;
+    let cache: typeof resolvePackagePath._FIND_UP_CACHE;
+
+    beforeEach(function () {
+      resolvePackagePath._resetCache();
+      tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'findUpPackagePath'));
+      cache = resolvePackagePath._FIND_UP_CACHE;
+    });
+
+    it('returns null if no package.json exists on the path to root', function () {
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          bar: {
+            baz: 'hello',
+          },
+        },
+      });
+
+      // test against dir
+      let testPath = path.join(tmpDir, 'foo/bar');
+      expect(fs.existsSync(testPath)).to.equal(true);
+      expect(findUpPackagePath(testPath)).to.equal(null);
+
+      // tests against file
+      testPath = path.join(tmpDir, 'foo/bar/baz');
+      expect(fs.existsSync(testPath)).to.equal(true);
+      expect(findUpPackagePath(testPath)).to.equal(null);
+    });
+
+    it('returns the nearest package.json, caching results', function () {
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          bar: {
+            'package.json': JSON.stringify({ name: 'foo' }),
+            baz: {
+              qux: 'hello',
+              'package.json': JSON.stringify({ name: 'baz' }),
+            },
+            a: {
+              b: {
+                c: {
+                  d: 'hello again',
+                },
+              },
+            },
+          },
+        },
+      });
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo/bar/baz'))).to.equal(
+        path.join(tmpDir, 'foo/bar/baz/package.json'),
+      );
+      expect(cache.size).to.equal(1);
+      expect(cache.get(path.join(tmpDir, 'foo/bar/baz'))).to.equal(
+        path.join(tmpDir, 'foo/bar/baz/package.json'),
+      );
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo/bar'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+      expect(cache.size).to.equal(2);
+      expect(cache.get(path.join(tmpDir, 'foo/bar'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo/bar/a/b/c'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+      expect(cache.size).to.equal(3);
+      expect(cache.get(path.join(tmpDir, 'foo/bar/a/b/c'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo/bar/a/b/c/d'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+      expect(cache.size).to.equal(4);
+      expect(cache.get(path.join(tmpDir, 'foo/bar/a/b/c/d'))).to.equal(
+        path.join(tmpDir, 'foo/bar/package.json'),
+      );
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo'))).to.equal(null);
+      expect(cache.size).to.equal(5);
+      expect(cache.get(path.join(tmpDir, 'foo'))).to.equal(null);
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo/'))).to.equal(null);
+      // foo and foo/ should have same entry in the cache as cache is normalized
+      expect(cache.size).to.equal(5);
+    });
+
+    it('accepts a custom cache', function () {
+      let customCache = new Cache();
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          'package.json': JSON.stringify({ name: 'foo' }),
+        },
+      });
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo'), customCache)).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+      expect(cache.size).to.equal(0);
+      expect(customCache.size).to.equal(1);
+      expect(customCache.get(path.join(tmpDir, 'foo'))).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+    });
+
+    it('accepts cache=true', function () {
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          'package.json': JSON.stringify({ name: 'foo' }),
+        },
+      });
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo'), true)).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+      expect(cache.size).to.equal(1);
+      expect(cache.get(path.join(tmpDir, 'foo'))).to.equal(path.join(tmpDir, 'foo/package.json'));
+    });
+
+    it('accepts cache=false', function () {
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          'package.json': JSON.stringify({ name: 'foo' }),
+        },
+      });
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo'), false)).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+      expect(cache.size).to.equal(0);
+    });
+
+    it('resetCache resets the findUpPackagePath cache', function () {
+      fixturify.writeSync(tmpDir, {
+        foo: {
+          'package.json': JSON.stringify({ name: 'foo' }),
+        },
+      });
+
+      expect(findUpPackagePath(path.join(tmpDir, 'foo'), true)).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+      expect(resolvePackagePath._FIND_UP_CACHE.size).to.equal(1);
+      expect(resolvePackagePath._FIND_UP_CACHE.get(path.join(tmpDir, 'foo'))).to.equal(
+        path.join(tmpDir, 'foo/package.json'),
+      );
+
+      resolvePackagePath._resetCache();
+      expect(resolvePackagePath._FIND_UP_CACHE.size).to.equal(0);
+    });
+  });
 });
