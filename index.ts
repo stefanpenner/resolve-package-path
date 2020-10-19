@@ -1,5 +1,6 @@
 'use strict';
 
+import path = require('path');
 const customResolvePackagePath = require('./lib/resolve-package-path');
 const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   // resolve package error codes
@@ -12,16 +13,53 @@ const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
 };
 
 import CacheGroup = require('./lib/cache-group');
+import Cache = require('./lib/cache');
 const getRealFilePath = customResolvePackagePath._getRealFilePath;
 const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
+const __findUpPackagePath = customResolvePackagePath._findUpPackagePath;
 
 let CACHE = new CacheGroup();
+let FIND_UP_CACHE = new Cache();
 let pnp: any;
 
 try {
   pnp = require('pnpapi'); // eslint-ignore node/no-missing-require
 } catch (error) {
   // not in Yarn PnP; not a problem
+}
+
+/**
+ * Search each directory in the absolute path `basedir`, from leaf to root, for
+ * a `package.json`, and return the first match, or `null` if no `package.json`
+ * was found.
+ *
+ * @public
+ * @param {string} basedir - an absolute path in which to search for a `package.json`
+ * @param {CacheGroup|boolean} [_cache] (optional)
+ *  * if true: will choose the default global cache
+ *  * if false: will not cache
+ *  * if undefined or omitted, will choose the default global cache
+ *  * otherwise we assume the argument is an external cache of the form provided by resolve-package-path/lib/cache-group.js
+ *
+ * @return {string|null} a full path to the resolved package.json if found or null if not
+ */
+function _findUpPackagePath(basedir: string, _cache?: Cache | boolean) {
+  let cache;
+  if (_cache === undefined || _cache === null || _cache === true) {
+    // if no cache specified, or if cache is true then use the global cache
+    cache = FIND_UP_CACHE;
+  } else if (_cache === false) {
+    // if cache is explicity false, create a throw-away cache;
+    cache = new Cache();
+  } else {
+    // otherwise, assume the user has provided an alternative cache for the following form:
+    // provided by resolve-package-path/lib/cache-group.js
+    cache = _cache;
+  }
+
+  let absoluteStart = path.resolve(basedir);
+
+  return __findUpPackagePath(cache, absoluteStart);
 }
 
 /*
@@ -92,13 +130,21 @@ function resolvePackagePath(
 
 resolvePackagePath._resetCache = function () {
   CACHE = new CacheGroup();
+  FIND_UP_CACHE = new Cache();
 };
 module resolvePackagePath {
   export let _CACHE: CacheGroup;
+  export let _FIND_UP_CACHE = FIND_UP_CACHE;
+  export let findUpPackagePath = _findUpPackagePath;
 }
 Object.defineProperty(resolvePackagePath, '_CACHE', {
   get: function () {
     return CACHE;
+  },
+});
+Object.defineProperty(resolvePackagePath, '_FIND_UP_CACHE', {
+  get: function () {
+    return FIND_UP_CACHE;
   },
 });
 

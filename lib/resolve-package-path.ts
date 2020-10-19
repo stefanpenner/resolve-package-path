@@ -174,6 +174,47 @@ function _findPackagePath(realFilePathCache: Cache, name: string, dir: string) {
 }
 
 /*
+ * Resolve the path to the nearest `package.json` from the given initial search
+ * directory.
+ *
+ * @param  {Cache} findUpCache - a cache of memoized results that is
+ * prioritized to avoid I/O.
+ *
+ * @param {string} initialSearchDir - the normalized path to start searching
+ * from.
+ *
+ * @return {string | null} - the deepest directory on the path to root from
+ * `initialSearchDir` that contains a {{package.json}}, or `null` if no such
+ * directory exists.
+ */
+function _findUpPackagePath(findUpCache: Cache, initialSearchDir: string) {
+  let previous;
+  let dir = initialSearchDir;
+  let maybePackageJsonPath;
+  let result = null;
+
+  do {
+    if (findUpCache.has(dir)) {
+      result = findUpCache.get(dir);
+      break;
+    }
+
+    maybePackageJsonPath = path.join(dir, 'package.json');
+    if (fs.existsSync(maybePackageJsonPath)) {
+      result = maybePackageJsonPath;
+      break;
+    }
+
+    previous = dir;
+    dir = path.dirname(dir);
+  } while (dir !== previous);
+
+  findUpCache.set(initialSearchDir, result);
+
+  return result;
+}
+
+/*
  * Resolve the path to a module's package.json file, if it exists. The
  * name and dir are as in hashForDep and ModuleEntry.locate.
  *
@@ -234,5 +275,6 @@ function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
 
 export = resolvePackagePath;
 resolvePackagePath._findPackagePath = _findPackagePath;
+resolvePackagePath._findUpPackagePath = _findUpPackagePath;
 resolvePackagePath._getRealFilePath = _getRealFilePath;
 resolvePackagePath._getRealDirectoryPath = _getRealDirectoryPath;
