@@ -7,8 +7,7 @@
   "types": "index.d.ts",
   "license": "MIT",
   "dependencies": {
-    "path-root": "^0.1.1",
-    "resolve": "^1.17.0"
+    "path-root": "^0.1.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.13",
