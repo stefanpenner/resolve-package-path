@@ -1,4 +1,4 @@
-import shouldPreserveSymlinks = require('../lib/should-preserve-symlinks');
+import shouldPreserveSymlinks = require('../src/should-preserve-symlinks');
 import chai = require('chai');
 const expect = chai.expect;
 

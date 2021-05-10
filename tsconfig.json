@@ -5,10 +5,14 @@
     "moduleResolution": "node",
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es5",
+    "target": "es2018",
     "baseUrl": ".",
+    "outDir": "lib",
+    "rootDir": "src",
     "paths": {
       "*": ["types/*"]
     }
-  }
+  },
+  "include": ["src"],
+  "exclude": ["tests"]
 }

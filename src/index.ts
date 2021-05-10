@@ -1,7 +1,8 @@
 'use strict';
 
-import path = require('path');
-const customResolvePackagePath = require('./lib/resolve-package-path');
+import path from 'path';
+import customResolvePackagePath from './resolve-package-path';
+
 const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
@@ -12,8 +13,8 @@ const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   MISSING_DEPENDENCY: true,
 };
 
-import CacheGroup = require('./lib/cache-group');
-import Cache = require('./lib/cache');
+import CacheGroup = require('./cache-group');
+import Cache = require('./cache');
 const getRealFilePath = customResolvePackagePath._getRealFilePath;
 const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
 const __findUpPackagePath = customResolvePackagePath._findUpPackagePath;

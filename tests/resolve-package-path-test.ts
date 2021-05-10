@@ -1,9 +1,9 @@
 'use strict';
 import path = require('path');
 import chai = require('chai');
-import resolvePackagePath = require('../lib/resolve-package-path');
-import Cache = require('../lib/cache');
-import CacheGroup = require('../lib/cache-group');
+import resolvePackagePath = require('../src/resolve-package-path');
+import Cache = require('../src/cache');
+import CacheGroup = require('../src/cache-group');
 import fs = require('fs');
 import Project = require('fixturify-project');
 

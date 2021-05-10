@@ -1,8 +1,8 @@
 'use strict';
 
-import resolvePackagePath = require('../index');
+import resolvePackagePath = require('../src/index');
 import Project = require('fixturify-project');
-import Cache = require('../lib/cache');
+import Cache = require('../src/cache');
 import fixturify = require('fixturify');
 import fs = require('fs-extra');
 import chai = require('chai');
