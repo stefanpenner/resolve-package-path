@@ -24,7 +24,8 @@ let FIND_UP_CACHE = new Cache();
 let pnp: any;
 
 try {
-  pnp = require('pnpapi'); // eslint-ignore node/no-missing-require
+  // eslint-disable-next-line node/no-missing-require
+  pnp = require('pnpapi');
 } catch (error) {
   // not in Yarn PnP; not a problem
 }
@@ -133,6 +134,7 @@ resolvePackagePath._resetCache = function () {
   CACHE = new CacheGroup();
   FIND_UP_CACHE = new Cache();
 };
+// eslint-disable-next-line no-redeclare
 module resolvePackagePath {
   export let _CACHE: CacheGroup;
   export let _FIND_UP_CACHE = FIND_UP_CACHE;

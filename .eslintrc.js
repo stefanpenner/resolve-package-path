@@ -12,6 +12,13 @@ module.exports = {
   },
   rules: {
     'node/shebang': 'off',
+    'node/no-missing-import': 'off',
+    'node/no-unsupported-features/es-syntax': [
+      'error',
+      {
+        ignores: ['modules'],
+      },
+    ],
   },
   overrides: [
     {
