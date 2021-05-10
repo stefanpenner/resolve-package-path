@@ -1,7 +1,8 @@
 'use strict';
 
-import path = require('path');
-const customResolvePackagePath = require('./lib/resolve-package-path');
+import path from 'path';
+import customResolvePackagePath from './resolve-package-path';
+
 const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   // resolve package error codes
   MODULE_NOT_FOUND: true,
@@ -12,8 +13,8 @@ const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
   MISSING_DEPENDENCY: true,
 };
 
-import CacheGroup = require('./lib/cache-group');
-import Cache = require('./lib/cache');
+import CacheGroup = require('./cache-group');
+import Cache = require('./cache');
 const getRealFilePath = customResolvePackagePath._getRealFilePath;
 const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
 const __findUpPackagePath = customResolvePackagePath._findUpPackagePath;
@@ -23,7 +24,8 @@ let FIND_UP_CACHE = new Cache();
 let pnp: any;
 
 try {
-  pnp = require('pnpapi'); // eslint-ignore node/no-missing-require
+  // eslint-disable-next-line node/no-missing-require
+  pnp = require('pnpapi');
 } catch (error) {
   // not in Yarn PnP; not a problem
 }
@@ -132,6 +134,7 @@ resolvePackagePath._resetCache = function () {
   CACHE = new CacheGroup();
   FIND_UP_CACHE = new Cache();
 };
+// eslint-disable-next-line no-redeclare
 module resolvePackagePath {
   export let _CACHE: CacheGroup;
   export let _FIND_UP_CACHE = FIND_UP_CACHE;
