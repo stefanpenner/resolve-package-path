@@ -1,4 +1,4 @@
-# resolve-package-path ![CI](https://github.com/stefanpenner/resolve-package-path/workflows/CI/badge.svg)
+# resolve-package-path [![CI](https://github.com/stefanpenner/resolve-package-path/workflows/CI/badge.svg)](https://github.com/stefanpenner/resolve-package-path/actions/workflows/ci.yml)
 
 This project is special-purpose, made to resolve `package.json` files for:
 
