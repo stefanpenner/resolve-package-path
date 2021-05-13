@@ -4,3 +4,4 @@
 *.d.ts
 *.map
 /lib/
+/tests/tmp/
