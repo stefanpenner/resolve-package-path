@@ -858,6 +858,18 @@ fixturify@^2.1.0:
     matcher-collection "^2.0.1"
     walk-sync "^2.0.2"
 
+fixturify@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/fixturify/-/fixturify-2.1.1.tgz#e962d72f062600cb81a9651086f60d822c72d998"
+  integrity sha512-SRgwIMXlxkb6AUgaVjIX+jCEqdhyXu9hah7mcK+lWynjKtX73Ux1TDv71B7XyaQ+LJxkYRHl5yCL8IycAvQRUw==
+  dependencies:
+    "@types/fs-extra" "^8.1.0"
+    "@types/minimatch" "^3.0.3"
+    "@types/rimraf" "^2.0.3"
+    fs-extra "^8.1.0"
+    matcher-collection "^2.0.1"
+    walk-sync "^2.0.2"
+
 flat-cache@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/flat-cache/-/flat-cache-3.0.4.tgz#61b0338302b2fe9f957dcc32fc2a87f1c3048b11"
