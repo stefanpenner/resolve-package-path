@@ -85,66 +85,55 @@ describe('resolve-package-path', function () {
     });
   });
 
-  if (require('os').platform() !== 'win32') {
-    describe('yarn pnp usage', function () {
-      this.timeout(30000); // in-case the network IO is slow
-      let app: Project;
-      const execa = require('execa');
+  describe('yarn pnp usage', function () {
+    this.timeout(30000); // in-case the network IO is slow
+    let app: Project;
+    const execa = require('execa');
 
-      beforeEach(function () {
-        app = new Project('dummy', '1.0.0', app => {
-          app.pkg.private = true;
-          app.pkg.name;
-          app.pkg.scripts = {
-            test: 'node ./test.js',
-          };
-          app.pkg.installConfig = {
-            pnp: true,
-          };
-          app.addDependency('ember-source-channel-url', '1.1.0');
-          app.addDependency('resolve-package-path', 'link:' + path.join(__dirname, '..'));
-          app.files = {
-            'test.js': `
-if (require('resolve-package-path')(process.argv[2], __dirname)) {
-  console.log('found');
-  process.exitCode = 0;
-} else {
-  console.log('not-found');
-  process.exitCode = 1;
-}`,
-          };
-        });
-
-        app.writeSync();
-        execa.sync('yarn', {
-          cwd: app.baseDir,
-        });
+    beforeEach(function () {
+      app = new Project('dummy', '1.0.0', app => {
+        app.pkg.private = true;
+        app.pkg.name;
+        app.pkg.scripts = {
+          test: 'node ./test.js',
+        };
+        app.pkg.installConfig = {
+          pnp: true,
+        };
+        app.addDependency('ember-source-channel-url', '1.1.0');
+        app.addDependency('resolve-package-path', 'link:' + path.join(__dirname, '..'));
+        app.files = {
+          'test.js':
+            'require("resolve-package-path")(process.argv[2], __dirname); console.log("success!");',
+        };
       });
 
-      afterEach(function () {
-        app.dispose();
-      });
-
-      it('handles yarn pnp usage - package exists', function () {
-        let result = execa.sync('yarn', ['test', 'ember-source-channel-url'], {
-          cwd: app.baseDir,
-        });
-
-        expect(result.stdout.toString()).includes('found');
-        expect(result.exitCode).to.eql(0);
-      });
-
-      it('handles yarn pnp usage - package missing', function () {
-        let result = execa.sync('yarn', ['test', 'some-non-existent-package'], {
-          cwd: app.baseDir,
-          reject: false,
-        });
-
-        expect(result.stdout.toString()).includes('not-found');
-        expect(result.exitCode).to.eql(1);
+      app.writeSync();
+      execa.sync('yarn', {
+        cwd: app.baseDir,
       });
     });
-  }
+
+    afterEach(function () {
+      app.dispose();
+    });
+
+    it('handles yarn pnp usage - package exists', function () {
+      let result = execa.sync('yarn', ['test', 'ember-source-channel-url'], {
+        cwd: app.baseDir,
+      });
+
+      expect(result.stdout.toString()).includes('success!');
+    });
+
+    it('handles yarn pnp usage - package missing', function () {
+      let result = execa.sync('yarn', ['test', 'some-non-existent-package'], {
+        cwd: app.baseDir,
+      });
+
+      expect(result.stdout.toString()).includes('success!');
+    });
+  });
 
   describe('findUpPackagePath', function () {
     let tmpDir: string;
