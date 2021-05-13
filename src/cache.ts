@@ -14,7 +14,7 @@ function makeCache() {
 }
 
 export = class Cache {
-  private _store: { [key: string]: string };
+  _store: { [key: string]: string };
   constructor() {
     this._store = makeCache();
   }
