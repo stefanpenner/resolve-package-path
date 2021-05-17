@@ -1,7 +1,7 @@
 'use strict';
 
 import resolvePackagePath = require('../src/index');
-import Project = require('fixturify-project');
+import { Project } from 'fixturify-project';
 import Cache = require('../src/cache');
 import fixturify = require('fixturify');
 import fs = require('fs-extra');
@@ -59,15 +59,15 @@ describe('resolve-package-path', function () {
     it('smoke test', function () {
       app.writeSync();
 
-      expect(resolvePackagePath('app', app.root)).to.eql(null);
+      expect(resolvePackagePath('app', app.baseDir)).to.eql(null);
       expect(resolvePackagePath('rsvp', app.baseDir)).to.eql(
-        path.normalize(`${app.root}/app/node_modules/rsvp/package.json`),
+        path.normalize(`${app.baseDir}/node_modules/rsvp/package.json`),
       );
       expect(resolvePackagePath('orange', app.baseDir)).to.eql(
-        path.normalize(`${app.root}/app/node_modules/orange/package.json`),
+        path.normalize(`${app.baseDir}/node_modules/orange/package.json`),
       );
       expect(resolvePackagePath('apple', app.baseDir)).to.eql(
-        path.normalize(`${app.root}/app/node_modules/apple/package.json`),
+        path.normalize(`${app.baseDir}/node_modules/apple/package.json`),
       );
       expect(resolvePackagePath('a', app.baseDir)).to.eql(null);
       expect(resolvePackagePath('a', rsvp.baseDir)).to.eql(

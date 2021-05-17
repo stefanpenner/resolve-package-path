@@ -5,7 +5,7 @@ import resolvePackagePath = require('../src/resolve-package-path');
 import Cache = require('../src/cache');
 import CacheGroup = require('../src/cache-group');
 import fs = require('fs');
-import Project = require('fixturify-project');
+import { Project } from 'fixturify-project';
 
 const fixturesPath = path.join(__dirname, 'fixtures');
 const assert = chai.assert;
@@ -223,13 +223,13 @@ describe('resolvePackagePath', function () {
     });
 
     it('resolves an existing directory as null (it is not a file)', function () {
-      let result = resolvePackagePath._getRealFilePath(cache, project.root);
+      let result = resolvePackagePath._getRealFilePath(cache, project.baseDir);
       assert.isNull(result, 'reference to a directory should return null');
-      assert.isNull(cache.get(project.root), 'cache reference to directory should return null');
+      assert.isNull(cache.get(project.baseDir), 'cache reference to directory should return null');
     });
 
     it('resolves a non-existent path as null', function () {
-      let result = resolvePackagePath._getRealFilePath(cache, project.root + '2');
+      let result = resolvePackagePath._getRealFilePath(cache, project.baseDir + '2');
       assert.isNull(result, 'reference to a non-existent path correctly returns null');
     });
   });
