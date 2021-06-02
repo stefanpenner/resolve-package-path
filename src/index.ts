@@ -31,12 +31,12 @@ try {
 }
 
 /**
- * Search each directory in the absolute path `basedir`, from leaf to root, for
+ * Search each directory in the absolute path `baseDir`, from leaf to root, for
  * a `package.json`, and return the first match, or `null` if no `package.json`
  * was found.
  *
  * @public
- * @param {string} basedir - an absolute path in which to search for a `package.json`
+ * @param {string} baseDir - an absolute path in which to search for a `package.json`
  * @param {CacheGroup|boolean} [_cache] (optional)
  *  * if true: will choose the default global cache
  *  * if false: will not cache
@@ -45,7 +45,7 @@ try {
  *
  * @return {string|null} a full path to the resolved package.json if found or null if not
  */
-function _findUpPackagePath(basedir: string, _cache?: Cache | boolean) {
+function _findUpPackagePath(baseDir: string, _cache?: Cache | boolean) {
   let cache;
   if (_cache === undefined || _cache === null || _cache === true) {
     // if no cache specified, or if cache is true then use the global cache
@@ -59,7 +59,7 @@ function _findUpPackagePath(basedir: string, _cache?: Cache | boolean) {
     cache = _cache;
   }
 
-  let absoluteStart = path.resolve(basedir);
+  let absoluteStart = path.resolve(baseDir);
 
   return __findUpPackagePath(cache, absoluteStart);
 }
@@ -69,7 +69,7 @@ function _findUpPackagePath(basedir: string, _cache?: Cache | boolean) {
  *
  * @method resolvePackagePathSync
  * @param {string} name name of the dependency module.
- * @param {string} basedir root dir to run the resolve from
+ * @param {string} baseDir root dir to run the resolve from
  * @param {Boolean|CustomCache} (optional)
  *  * if true: will choose the default global cache
  *  * if false: will not cache
@@ -81,7 +81,7 @@ function _findUpPackagePath(basedir: string, _cache?: Cache | boolean) {
 export = resolvePackagePath;
 function resolvePackagePath(
   target: string,
-  basedir: string,
+  baseDir: string,
   _cache?: CacheGroup | boolean,
 ): string | null {
   let cache;
@@ -98,7 +98,7 @@ function resolvePackagePath(
     cache = _cache;
   }
 
-  const key = target + '\x00' + basedir;
+  const key = target + '\x00' + baseDir;
 
   let pkgPath;
 
@@ -110,8 +110,8 @@ function resolvePackagePath(
       // current release. This is due to Yarn 1.13 and resolve interoperating
       // together seamlessly.
       pkgPath = pnp
-        ? pnp.resolveToUnqualified(target + '/package.json', basedir)
-        : customResolvePackagePath(cache, target, basedir);
+        ? pnp.resolveToUnqualified(target + '/package.json', baseDir)
+        : customResolvePackagePath(cache, target, baseDir);
     } catch (e) {
       if (e !== null && typeof e === 'object') {
         const code: keyof typeof ALLOWED_ERROR_CODES = e.code;
