@@ -22,7 +22,7 @@ import CacheGroup = require('./cache-group');
  * Unix/Linux or Windows"
  */
 
-const ABSOLUTE_OR_RELATIVE_PATH_REGEX = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\/\\])/;
+const ABSOLUTE_OR_RELATIVE_PATH_REGEX = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[/\\])/;
 
 import shouldPreserveSymlinks = require('./should-preserve-symlinks');
 const PRESERVE_SYMLINKS = shouldPreserveSymlinks(process);
