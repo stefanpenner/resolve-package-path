@@ -12,7 +12,6 @@ import os = require('os');
 const expect = chai.expect;
 const { findUpPackagePath } = resolvePackagePath;
 const FIXTURE_ROOT = `${__dirname}/tmp/fixtures/`;
-
 describe('resolve-package-path', function () {
   beforeEach(function () {
     fs.removeSync(FIXTURE_ROOT);
@@ -87,7 +86,7 @@ describe('resolve-package-path', function () {
   });
 
   if (require('os').platform() !== 'win32') {
-    describe('yarn pnp usage', function () {
+    describe.only('yarn pnp usage', function () {
       this.timeout(30000); // in-case the network IO is slow
       let app: Project;
       const execa = require('execa');
@@ -105,8 +104,14 @@ describe('resolve-package-path', function () {
           app.addDependency('ember-source-channel-url', '1.1.0');
           app.addDependency('resolve-package-path', 'link:' + path.join(__dirname, '..'));
           app.files = {
-            'test.js':
-              'require("resolve-package-path")(process.argv[2], __dirname); console.log("success!");',
+            'test.js': `
+if (require('resolve-package-path')(process.argv[2], __dirname)) {
+  console.log('found');
+  process.exitCode = 0;
+} else {
+  console.log('not-found');
+  process.exitCode = 1;
+}`,
           };
         });
 
@@ -125,15 +130,18 @@ describe('resolve-package-path', function () {
           cwd: app.baseDir,
         });
 
-        expect(result.stdout.toString()).includes('success!');
+        expect(result.stdout.toString()).includes('found');
+        expect(result.exitCode).to.eql(0);
       });
 
       it('handles yarn pnp usage - package missing', function () {
         let result = execa.sync('yarn', ['test', 'some-non-existent-package'], {
           cwd: app.baseDir,
+          reject: false,
         });
 
-        expect(result.stdout.toString()).includes('success!');
+        expect(result.stdout.toString()).includes('not-found');
+        expect(result.exitCode).to.eql(1);
       });
     });
   }
