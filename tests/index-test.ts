@@ -86,7 +86,7 @@ describe('resolve-package-path', function () {
   });
 
   if (require('os').platform() !== 'win32') {
-    describe.only('yarn pnp usage', function () {
+    describe('yarn pnp usage', function () {
       this.timeout(30000); // in-case the network IO is slow
       let app: Project;
       const execa = require('execa');
