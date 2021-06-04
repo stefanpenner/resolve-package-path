@@ -1,3 +1,8 @@
+# 4.0.1
+
+* [fixes #24] support PNP and basedir slashes
+* Improve PNP tests
+
 # 4.0.0
 
 * drop Node 10.x
