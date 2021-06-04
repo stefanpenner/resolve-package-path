@@ -97,6 +97,7 @@ describe('resolve-package-path', function () {
           app.pkg.name;
           app.pkg.scripts = {
             test: 'node ./test.js',
+            'test:trailing-slash': 'node ./test-trailing-slash.js',
           };
           app.pkg.installConfig = {
             pnp: true,
@@ -112,6 +113,16 @@ if (require('resolve-package-path')(process.argv[2], __dirname)) {
   console.log('not-found');
   process.exitCode = 1;
 }`,
+            'test-trailing-slash.js': `
+const assert = require('assert');
+const rpp = require('resolve-package-path');
+const path = require('path');
+
+const emberSourceChannelUrlPath = path.dirname(rpp('ember-source-channel-url', '.'))
+
+assert.equal(rpp('got', emberSourceChannelUrlPath),rpp('got', emberSourceChannelUrlPath + '/'));
+assert.equal(typeof rpp('got', emberSourceChannelUrlPath), 'string');
+`,
           };
         });
 
@@ -128,6 +139,7 @@ if (require('resolve-package-path')(process.argv[2], __dirname)) {
       it('handles yarn pnp usage - package exists', function () {
         let result = execa.sync('yarn', ['test', 'ember-source-channel-url'], {
           cwd: app.baseDir,
+          reject: false,
         });
 
         expect(result.stdout.toString()).includes('found');
@@ -142,6 +154,17 @@ if (require('resolve-package-path')(process.argv[2], __dirname)) {
 
         expect(result.stdout.toString()).includes('not-found');
         expect(result.exitCode).to.eql(1);
+      });
+
+      describe('trailing-slash', function () {
+        it('handles missing trailing slash automagically', function () {
+          let result = execa.sync('yarn', ['test:trailing-slash'], {
+            cwd: app.baseDir,
+            reject: false,
+          });
+          expect(result.stderr).to.eql('');
+          expect(result.exitCode).to.eql(0, 'expected process to exit cleanly');
+        });
       });
     });
   }

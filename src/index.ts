@@ -98,6 +98,10 @@ function resolvePackagePath(
     cache = _cache;
   }
 
+  if (baseDir.charAt(baseDir.length - 1) !== path.sep) {
+    baseDir = `${baseDir}${path.sep}`;
+  }
+
   const key = target + '\x00' + baseDir;
 
   let pkgPath;
