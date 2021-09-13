@@ -1,5 +1,5 @@
-import Cache = require('./cache');
-import CacheGroup = require('./cache-group');
+import Cache from './cache';
+import CacheGroup from './cache-group';
 declare function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string): string | null;
 declare namespace resolvePackagePath {
     var _findPackagePath: (realFilePathCache: Cache, name: string, dir: string) => string | null;

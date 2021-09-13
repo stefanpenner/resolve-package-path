@@ -2,12 +2,12 @@
 // credit goes to https://github.com/davecombs
 // extracted in part from: https://github.com/stefanpenner/hash-for-dep/blob/15b2ebcf22024ceb2eb7907f8c412ae40f87b15e/lib/resolve-package-path.js#L1
 //
-import fs = require('fs');
-import path = require('path');
-import pathRoot = require('path-root');
+import fs from 'fs';
+import path from 'path';
+import pathRoot from 'path-root';
 
-import Cache = require('./cache');
-import CacheGroup = require('./cache-group');
+import Cache from './cache';
+import CacheGroup from './cache-group';
 import rethrowUnlessCode from './rethrow-unless-code';
 
 /*
