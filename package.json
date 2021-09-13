@@ -32,11 +32,10 @@
     "typescript": "^4.3.2"
   },
   "scripts": {
-    "build": "tsc -b .",
+    "prepare": "tsc -b .",
     "watch": "tsc --watch .",
     "clean": "tsc -b --clean .",
-    "test": "npm-run-all build lint test:ts",
-    "test:ts": "ts-mocha tests/*-test.ts",
+    "test": "ts-mocha tests/*-test.ts",
     "test:inspect": "ts-mocha inspect tests/*-test.ts",
     "test:ts:debug": "ts-mocha debug tests/*-test.ts",
     "lint": "eslint ."
