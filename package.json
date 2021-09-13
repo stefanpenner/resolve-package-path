@@ -1,7 +1,7 @@
 {
   "name": "resolve-package-path",
   "description": "a special purpose fast memoizing way to resolve a node modules package.json",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "repository": "git@github.com:stefanpenner/resolve-package-path.git",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
