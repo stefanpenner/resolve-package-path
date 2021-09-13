@@ -1,5 +1,3 @@
-'use strict';
-
 function includes(array: [string], entry: string) {
   for (let i = 0; i < array.length; i++) {
     if (array[i] === entry) {

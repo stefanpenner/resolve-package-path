@@ -13,8 +13,8 @@ const ALLOWED_ERROR_CODES = [
   'MISSING_DEPENDENCY'
 ];
 
-import CacheGroup = require('./cache-group');
-import Cache = require('./cache');
+import CacheGroup from './cache-group';
+import Cache from './cache';
 const getRealFilePath = customResolvePackagePath._getRealFilePath;
 const getRealDirectoryPath = customResolvePackagePath._getRealDirectoryPath;
 const __findUpPackagePath = customResolvePackagePath._findUpPackagePath;

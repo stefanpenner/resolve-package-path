@@ -1,4 +1,4 @@
-import Cache = require('./cache');
+import Cache from './cache';
 declare const _default: {
     new (): {
         MODULE_ENTRY: Cache;
