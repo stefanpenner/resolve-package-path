@@ -2,16 +2,16 @@
 
 import path from 'path';
 import customResolvePackagePath from './resolve-package-path';
-
-const ALLOWED_ERROR_CODES: { [key: string]: boolean } = {
+import rethrowUnlessCode from './rethrow-unless-code';
+const ALLOWED_ERROR_CODES = [
   // resolve package error codes
-  MODULE_NOT_FOUND: true,
+  'MODULE_NOT_FOUND',
 
   // Yarn PnP Error Codes
-  UNDECLARED_DEPENDENCY: true,
-  MISSING_PEER_DEPENDENCY: true,
-  MISSING_DEPENDENCY: true,
-};
+  'UNDECLARED_DEPENDENCY',
+  'MISSING_PEER_DEPENDENCY',
+  'MISSING_DEPENDENCY'
+];
 
 import CacheGroup = require('./cache-group');
 import Cache = require('./cache');
@@ -117,16 +117,8 @@ function resolvePackagePath(
         ? pnp.resolveToUnqualified(target + '/package.json', baseDir)
         : customResolvePackagePath(cache, target, baseDir);
     } catch (e) {
-      if (e !== null && typeof e === 'object') {
-        const code: keyof typeof ALLOWED_ERROR_CODES = e.code;
-        if (ALLOWED_ERROR_CODES[code] === true) {
-          pkgPath = null;
-        } else {
-          throw e;
-        }
-      } else {
-        throw e;
-      }
+      rethrowUnlessCode(e,  ...ALLOWED_ERROR_CODES);
+      pkgPath = null;
     }
 
     cache.PATH.set(key, pkgPath);
