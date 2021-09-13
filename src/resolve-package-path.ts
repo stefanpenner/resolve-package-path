@@ -8,6 +8,7 @@ import pathRoot = require('path-root');
 
 import Cache = require('./cache');
 import CacheGroup = require('./cache-group');
+import rethrowUnlessCode from './rethrow-unless-code';
 
 /*
  * Define a regex that will match against the 'name' value passed into
@@ -65,9 +66,7 @@ function _getRealFilePath(realFilePathCache: Cache, filePath: string) {
       }
     }
   } catch (e) {
-    if (e === null || typeof e !== 'object' || e.code !== 'ENOENT') {
-      throw e;
-    }
+    rethrowUnlessCode(e, 'ENOENT');
   }
 
   realFilePathCache.set(filePath, realPath);
@@ -103,9 +102,7 @@ function _getRealDirectoryPath(realDirectoryPathCache: Cache, directoryPath: str
       }
     }
   } catch (e) {
-    if (e === null || typeof e !== 'object' || (e.code !== 'ENOENT' && e.code !== 'ENOTDIR')) {
-      throw e;
-    }
+    rethrowUnlessCode(e, 'ENOENT', 'ENOTDIR');
   }
 
   realDirectoryPathCache.set(directoryPath, realPath);
