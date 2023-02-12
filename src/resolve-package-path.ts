@@ -45,7 +45,7 @@ const PRESERVE_SYMLINKS = shouldPreserveSymlinks(process);
  * been normalized, but not necessarily resolved to a real path).
  * @return {String} real path or null
  */
-function _getRealFilePath(realFilePathCache: Cache, filePath: string) {
+function _getRealFilePath(realFilePathCache: Cache, filePath: string): string | null {
   if (realFilePathCache.has(filePath)) {
     return realFilePathCache.get(filePath); // could be null
   }
@@ -84,7 +84,10 @@ function _getRealFilePath(realFilePathCache: Cache, filePath: string) {
  * been normalized, but not necessarily resolved to a real path).
  * @return {String} real path or null
  */
-function _getRealDirectoryPath(realDirectoryPathCache: Cache, directoryPath: string) {
+function _getRealDirectoryPath(
+  realDirectoryPathCache: Cache,
+  directoryPath: string,
+): string | null {
   if (realDirectoryPathCache.has(directoryPath)) {
     return realDirectoryPathCache.get(directoryPath); // could be null
   }
@@ -139,7 +142,7 @@ function _getRealDirectoryPath(realDirectoryPathCache: Cache, directoryPath: str
  *
  * @result the path to the actual package.json file that's found, or null if not.
  */
-function _findPackagePath(realFilePathCache: Cache, name: string, dir: string) {
+function _findPackagePath(realFilePathCache: Cache, name: string, dir: string): string | null {
   const fsRoot = pathRoot(dir);
   let currPath = dir;
 
@@ -184,7 +187,7 @@ function _findPackagePath(realFilePathCache: Cache, name: string, dir: string) {
  * `initialSearchDir` that contains a {{package.json}}, or `null` if no such
  * directory exists.
  */
-function _findUpPackagePath(findUpCache: Cache, initialSearchDir: string) {
+function _findUpPackagePath(findUpCache: Cache, initialSearchDir: string): string | null {
   let previous;
   let dir = initialSearchDir;
   let maybePackageJsonPath;
@@ -231,7 +234,7 @@ function _findUpPackagePath(findUpCache: Cache, initialSearchDir: string) {
  * Note: 'name' is expected in the format expected for require(x), i.e., it is
  * resolved using the Node path-normalization rules.
  */
-function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string) {
+function resolvePackagePath(caches: CacheGroup, name?: string, dir?: string): string | null {
   if (typeof name !== 'string' || name.length === 0) {
     throw new TypeError("resolvePackagePath: 'name' must be a non-zero-length string.");
   }
